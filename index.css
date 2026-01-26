@@ -1,0 +1,386 @@
+@import "tailwindcss";
+
+:root {
+  /* Modern Professional Palette */
+  --cv-bg: #F8FAFC;
+  /* Slate-50 */
+  --cv-sidebar: #FFFFFF;
+  --cv-card: #FFFFFF;
+
+  --cv-text-header: #0F172A;
+  /* Slate-900 */
+  --cv-text-main: #334155;
+  /* Slate-700 */
+  --cv-text-muted: #64748B;
+  /* Slate-500 */
+
+  --cv-accent: #2563EB;
+  /* Blue-600 */
+  --cv-accent-hover: #1D4ED8;
+
+  --cv-border: #E2E8F0;
+  /* Slate-200 */
+  --cv-border-focus: #2563EB;
+
+  --cv-radius: 16px;
+  /* Modern rounded corners */
+  --cv-padding: 20px;
+
+  --cv-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --cv-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --cv-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --cv-shadow-pro: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  --cv-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark-mode {
+  --cv-bg: #020617;
+  /* Slate-950 */
+  --cv-sidebar: #0F172A;
+  /* Slate-900 */
+  --cv-card: #0F172A;
+
+  --cv-text-header: #F1F5F9;
+  /* Slate-100 */
+  --cv-text-main: #E2E8F0;
+  /* Slate-200 */
+  --cv-text-muted: #94A3B8;
+  /* Slate-400 */
+
+  --cv-accent: #3B82F6;
+  /* Blue-500 */
+  --cv-accent-hover: #60A5FA;
+
+  --cv-border: #1E293B;
+  /* Slate-800 */
+  --cv-border-focus: #3B82F6;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark-mode .glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body {
+  background-color: var(--cv-bg);
+  color: var(--cv-text-main);
+  font-family: 'Inter', sans-serif;
+  transition: background-color var(--cv-transition), color var(--cv-transition);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+class-header {
+  font-family: 'Playfair Display', serif;
+  /* Use Serif for elegant headers */
+  color: var(--cv-text-header);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+
+  body {
+    background: white !important;
+    height: auto !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Properly hide UI elements using Tailwind classes is preferred, 
+     but we enforce it here for safety */
+  .no-print,
+  nav,
+  .builder-controls,
+  button,
+  input,
+  select,
+  textarea {
+    display: none !important;
+  }
+
+  /* Ensure the print version is visible */
+  .print\:block {
+    display: block !important;
+  }
+
+  /* CRITICAL: Force images to display and print */
+  img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-width: 100% !important;
+    page-break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure the CV container itself is fully visible and reset */
+  .cv-theme-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: white !important;
+    min-height: auto !important;
+    height: auto !important;
+    display: block !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .cv-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    page-break-after: avoid;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Prevent sections from splitting awkwardly */
+  section {
+    page-break-inside: avoid;
+    margin-bottom: 0 !important;
+  }
+
+  /* Color accuracy */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .cv-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    page-break-after: avoid;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Targeted overrides for the preview component itself */
+  .cv-preview-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    /* Critical for multi-page */
+    min-height: auto !important;
+    height: auto !important;
+    display: block !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    background: white !important;
+  }
+
+  /* HIGH CONTRAST TEXT FOR PRINTING - SELECTIVE APPROACH */
+  /* Only improve readability without destroying template designs */
+
+  /* Ensure very light text becomes readable (but preserve intentional colors) */
+  .text-slate-300,
+  .text-slate-400,
+  .text-gray-300,
+  .text-gray-400 {
+    color: #475569 !important;
+    /* slate-600 - readable but not too dark */
+  }
+
+  /* Preserve template-specific header colors and styles */
+  /* Only add weight for clarity, don't force colors */
+  h1,
+  h2,
+  h3 {
+    font-weight: 600 !important;
+  }
+
+  /* Prevent sections from splitting awkwardly */
+  section {
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+  }
+
+  /* Disable all animations for print */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* PRESERVE template backgrounds and colors - only fix truly problematic ones */
+  /* Remove the aggressive background overrides that made everything white */
+
+  /* Only fix templates with pure black backgrounds that would waste ink */
+  .bg-black {
+    background: #1e293b !important;
+    /* Dark slate instead of pure black */
+  }
+
+  /* Preserve gradient backgrounds - they're part of the design */
+  /* Keep colored text - it's intentional for each template */
+}
+
+
+/* Elite Professional Specific */
+.elite-professional-accent {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+.pro-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Structural Classes for CV Preview */
+.cv-theme-wrapper {
+  background-color: #f1f5f9;
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transition: background-color var(--cv-transition);
+  width: 100%;
+}
+
+.cv-container {
+  width: 210mm;
+  min-height: 297mm;
+  background-color: white;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar & Navigation Recovery */
+aside.no-print {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: var(--cv-sidebar);
+  border-right: 1px solid var(--cv-border);
+  padding: 2rem;
+  width: 320px;
+  z-index: 40;
+}
+
+aside.no-print nav {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+/* Grid layout for steps 1-9 */
+.steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .cv-container {
+    width: 100%;
+    min-height: auto;
+    box-shadow: none;
+  }
+
+  .cv-theme-wrapper {
+    padding: 0;
+    background-color: transparent;
+  }
+}
+
+/* Template Model Markers */
+.model-zurich,
+.model-executive,
+.model-silicon,
+.model-vogue,
+.model-harvard,
+.model-ignite,
+.model-montreal,
+.model-oxford,
+.model-berlin,
+.model-tokyo,
+.model-stockholm,
+.model-dubai {
+  @apply transition-all duration-700;
+}
+
+/* Navigation Sidebar Fix */
+aside nav {
+  @apply flex flex-col gap-3 w-full;
+}
+
+aside nav button {
+  @apply text-left w-full transition-all;
+}

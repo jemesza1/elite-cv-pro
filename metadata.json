@@ -1,0 +1,7 @@
+{
+  "name": "EliteCV - AI Resume Builder",
+  "description": "A professional, AI-powered resume builder that helps users create stunning, job-winning CVs in minutes using Gemini-driven content suggestions and elegant templates.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
