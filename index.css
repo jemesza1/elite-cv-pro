@@ -930,14 +930,24 @@ aside nav button {
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    color-adjust: exact !important;
   }
 
   /* Specific Template Fixes */
   .model-atlas,
   .model-prism,
   .model-nexus,
-  .model-zenith {
+  .model-zenith,
+  .model-executive,
+  .model-silicon,
+  .model-vogue,
+  .model-harvard,
+  .model-ignite,
+  .model-montreal,
+  .model-oxford,
+  .model-berlin,
+  .model-tokyo,
+  .model-stockholm,
+  .model-dubai {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -989,6 +999,27 @@ aside nav button {
   .model-elite [class*="border-[#D4AF37]"] {
     color: #a16207 !important;
     border-color: #a16207 !important;
+  }
+
+  /* Compact Print - Reduce huge paddings that cause empty spaces */
+  .cv-preview-container {
+    min-height: auto !important;
+    padding: 10mm !important;
+  }
+
+  header {
+    padding-top: 5mm !important;
+    padding-bottom: 5mm !important;
+    margin-bottom: 8mm !important;
+  }
+
+  section {
+    margin-bottom: 8mm !important;
+  }
+
+  section>div,
+  section>div>div {
+    break-inside: avoid !important;
   }
 }
 

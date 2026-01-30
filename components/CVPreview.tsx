@@ -137,7 +137,7 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
     if (template === 'executive') {
         return (
             <div className="cv-preview-container w-full bg-white text-slate-900 min-h-[1100px] shadow-pro" dir={isRtl ? 'rtl' : 'ltr'}>
-                <header className="bg-slate-900 p-16 relative overflow-hidden flex justify-between items-center text-white">
+                <header className="bg-slate-900 p-10 md:p-16 relative overflow-hidden flex justify-between items-center text-white">
                     <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600 skew-x-[-15deg] translate-x-12"></div>
                     <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-500/10 -translate-x-4 blur-xl"></div>
 
@@ -163,13 +163,13 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                     </div>
                 </header>
 
-                <div className="p-16 space-y-16">
+                <div className="p-10 md:p-16 space-y-8 md:space-y-16">
                     {personalInfo.summary && (
-                        <section className="bg-slate-50 p-12 rounded-[2.5rem] relative group border border-slate-100">
+                        <section className="bg-slate-50 p-8 md:p-12 rounded-[2rem] relative group border border-slate-100">
                             <div className="absolute top-8 left-8 text-6xl text-blue-200/50 font-serif leading-none">“</div>
                             <div className="relative z-10">
                                 <h2 className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] mb-6">Executive Summary</h2>
-                                <p className="text-2xl leading-relaxed text-slate-700 font-medium italic whitespace-pre-line break-words">
+                                <p className="text-xl leading-relaxed text-slate-700 font-medium italic whitespace-pre-line break-words">
                                     {personalInfo.summary}
                                 </p>
                             </div>
