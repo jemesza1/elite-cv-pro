@@ -975,8 +975,8 @@ aside nav button {
   .model-minimal .cv-preview-container,
   .model-silicon-valley .cv-preview-container,
   .model-parisian .cv-preview-container {
-    page-break-after: always;
-    break-after: page;
+    page-break-after: auto;
+    break-after: auto;
   }
 
   /* Force Dark/Premium backgrounds for specific models */
@@ -1020,6 +1020,40 @@ aside nav button {
   section>div,
   section>div>div {
     break-inside: avoid !important;
+  }
+
+  /* Specific Fixes for Prism (shown in user pics) */
+  .model-prism .pl-15,
+  .model-prism .md\:pl-15 {
+    padding-left: 0 !important;
+  }
+
+  .model-prism .p-16,
+  .model-prism .md\:p-16 {
+    padding: 5mm !important;
+  }
+
+  .model-prism header {
+    padding-bottom: 2mm !important;
+    margin-bottom: 5mm !important;
+  }
+
+  .model-prism .space-y-10,
+  .model-prism .md\:space-y-10 {
+    gap: 4mm !important;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin-top: 0 !important;
+    page-break-after: avoid;
+  }
+
+  p,
+  div {
+    orphans: 3;
+    widows: 3;
   }
 }
 

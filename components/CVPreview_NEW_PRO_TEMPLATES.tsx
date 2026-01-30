@@ -106,9 +106,9 @@ const NewProfessionalTemplates: React.FC<Props> = ({ data, template, lang }) => 
                     {/* Colored accent bar */}
                     <div className="h-3 bg-gradient-to-r from-teal-500 via-blue-500 to-purple-500"></div>
 
-                    <div className="p-16">
+                    <div className="p-10 md:p-16">
                         {/* Header with photo */}
-                        <header className="flex flex-col md:flex-row items-center gap-14 mb-20 pb-16 border-b border-slate-100 relative">
+                        <header className="flex flex-col md:flex-row items-center gap-14 mb-10 md:mb-20 pb-10 md:pb-16 border-b border-slate-100 relative">
                             <div className="absolute -top-16 -right-16 w-32 h-32 bg-teal-500/5 blur-3xl rounded-full"></div>
                             {personalInfo.photo && (
                                 <div className="relative group">
@@ -139,7 +139,7 @@ const NewProfessionalTemplates: React.FC<Props> = ({ data, template, lang }) => 
                                     </div>
                                     <h2 className="text-2xl font-black text-slate-900">À Propos</h2>
                                 </div>
-                                <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-line break-words pl-15">{personalInfo.summary}</p>
+                                <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-line break-words pl-0 md:pl-15">{personalInfo.summary}</p>
                             </section>
                         )}
 
@@ -152,7 +152,7 @@ const NewProfessionalTemplates: React.FC<Props> = ({ data, template, lang }) => 
                                     </div>
                                     <h2 className="text-2xl font-black text-slate-900">Expérience</h2>
                                 </div>
-                                <div className="space-y-10 pl-15">
+                                <div className="space-y-8 md:space-y-10 pl-0 md:pl-15">
                                     {experience.map(exp => (
                                         <div key={exp.id} className="relative pl-8 before:absolute before:left-0 before:top-2 before:w-4 before:h-4 before:bg-blue-500 before:rounded-full">
                                             <div className="flex justify-between items-start mb-3">
@@ -287,7 +287,7 @@ const NewProfessionalTemplates: React.FC<Props> = ({ data, template, lang }) => 
                 </div>
 
                 {/* Right Content - Light */}
-                <div className="flex-1 bg-white p-16">
+                <div className="flex-1 bg-white p-10 md:p-16">
                     {/* Header */}
                     <header className="mb-12">
                         <h1 className="text-6xl font-black text-slate-900 mb-3 leading-none">
@@ -354,7 +354,7 @@ const NewProfessionalTemplates: React.FC<Props> = ({ data, template, lang }) => 
             <div className="cv-preview-container w-full min-h-[1100px] bg-gradient-to-br from-slate-100 via-blue-50 to-purple-50 p-12" dir={isRtl ? 'rtl' : 'ltr'}>
                 <div className="max-w-6xl mx-auto">
                     {/* Glassmorphic Header */}
-                    <header className="bg-white/70 backdrop-blur-3xl rounded-[2.5rem] p-16 mb-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] border border-white/50 relative overflow-hidden group">
+                    <header className="bg-white/70 backdrop-blur-3xl rounded-[2rem] md:rounded-[2.5rem] p-10 md:p-16 mb-8 md:mb-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.1)] border border-white/50 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[80px] group-hover:bg-blue-500/10 transition-colors duration-1000"></div>
                         <div className="flex flex-col md:flex-row items-center gap-16 relative z-10">
                             {personalInfo.photo && (
