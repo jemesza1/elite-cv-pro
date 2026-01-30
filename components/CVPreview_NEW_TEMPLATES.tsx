@@ -117,79 +117,78 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
     // Model 9: The Berlin (Modern Geometric)
     if (template === 'berlin') {
         return (
-            <div className="cv-preview-container w-full bg-white min-h-[1100px] text-slate-900" dir={isRtl ? 'rtl' : 'ltr'}>
-                {/* Bold Geometric Header */}
-                <header className="bg-slate-900 text-white p-12 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400 opacity-20 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-yellow-400 opacity-20 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+            <div className="cv-preview-container w-full bg-white min-h-[1100px] text-slate-900 shadow-pro" dir={isRtl ? 'rtl' : 'ltr'}>
+                <header className="bg-slate-900 text-white p-20 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400 opacity-15 -skew-y-12 -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute bottom-0 left-0 w-72 h-72 bg-yellow-400 opacity-10 skew-x-12 translate-y-1/2 -translate-x-1/3"></div>
 
-                    <div className="relative z-10 flex items-center gap-8">
+                    <div className="relative z-10 flex items-center gap-12">
                         {personalInfo.photo && (
-                            <img src={personalInfo.photo} alt="Profile" className="w-32 h-32 object-cover rounded-none border-4 border-yellow-400 shadow-xl" />
+                            <div className="relative group">
+                                <div className="absolute -inset-3 bg-yellow-400/30 -skew-y-3"></div>
+                                <img src={personalInfo.photo} alt="Profile" className="relative w-48 h-48 object-cover border-[6px] border-yellow-400 shadow-2xl grayscale contrast-125" />
+                            </div>
                         )}
                         <div className="flex-1">
-                            <h1 className="text-5xl font-black mb-2 tracking-tight uppercase">
-                                {personalInfo.firstName}<br />{personalInfo.lastName}
+                            <h1 className="text-7xl font-black mb-4 tracking-tighter uppercase leading-none">
+                                {personalInfo.firstName}<br /><span className="text-yellow-400">{personalInfo.lastName}</span>
                             </h1>
-                            <p className="text-xl text-yellow-400 font-bold uppercase tracking-wider">{personalInfo.jobTitle}</p>
+                            <p className="text-2xl text-yellow-400 font-black uppercase tracking-[0.3em] bg-white/5 inline-block px-6 py-3">{personalInfo.jobTitle}</p>
                         </div>
                     </div>
                 </header>
 
-                <div className="p-12">
-                    {/* Contact Bar */}
-                    <div className="flex flex-wrap gap-6 text-sm text-slate-600 mb-10 pb-6 border-b-4 border-yellow-400">
-                        {personalInfo.email && <span className="flex items-center gap-2"><i className="fa fa-envelope text-yellow-500"></i> {personalInfo.email}</span>}
-                        {personalInfo.phone && <span className="flex items-center gap-2"><i className="fa fa-phone text-yellow-500"></i> {personalInfo.phone}</span>}
-                        {personalInfo.location && <span className="flex items-center gap-2"><i className="fa fa-location-dot text-yellow-500"></i> {personalInfo.location}</span>}
+                <div className="p-20">
+                    <div className="flex flex-wrap gap-10 text-sm font-black uppercase tracking-wider text-slate-600 mb-16 pb-8 border-b-[6px] border-yellow-400">
+                        {personalInfo.email && <span className="flex items-center gap-3"><i className="fa fa-envelope text-yellow-500 text-base"></i> {personalInfo.email}</span>}
+                        {personalInfo.phone && <span className="flex items-center gap-3"><i className="fa fa-phone text-yellow-500 text-base"></i> {personalInfo.phone}</span>}
+                        {personalInfo.location && <span className="flex items-center gap-3"><i className="fa fa-location-dot text-yellow-500 text-base"></i> {personalInfo.location}</span>}
                     </div>
 
-                    {/* Summary */}
                     {personalInfo.summary && (
-                        <section className="mb-10">
-                            <h2 className="text-2xl font-black text-slate-900 mb-4 uppercase tracking-wide flex items-center gap-3">
-                                <span className="w-2 h-8 bg-yellow-400"></span> Profile
+                        <section className="mb-20">
+                            <h2 className="text-3xl font-black text-slate-900 mb-8 uppercase tracking-tight flex items-center gap-4">
+                                <span className="w-3 h-12 bg-yellow-400 -skew-x-12"></span> Profil
                             </h2>
-                            <p className="text-base leading-relaxed text-slate-700">{personalInfo.summary}</p>
+                            <p className="text-xl leading-loose text-slate-700 font-medium">{personalInfo.summary}</p>
                         </section>
                     )}
 
-                    {/* Experience */}
                     {experience.length > 0 && (
-                        <section className="mb-10">
-                            <h2 className="text-2xl font-black text-slate-900 mb-6 uppercase tracking-wide flex items-center gap-3">
-                                <span className="w-2 h-8 bg-yellow-400"></span> Experience
+                        <section className="mb-20">
+                            <h2 className="text-3xl font-black text-slate-900 mb-12 uppercase tracking-tight flex items-center gap-4">
+                                <span className="w-3 h-12 bg-yellow-400 -skew-x-12"></span> Erfahrung
                             </h2>
-                            <div className="space-y-8">
+                            <div className="space-y-16">
                                 {experience.map(exp => (
-                                    <div key={exp.id} className="border-l-4 border-yellow-400 pl-6 page-break-inside-avoid">
-                                        <div className="flex justify-between items-start mb-2">
+                                    <div key={exp.id} className="relative pl-10 before:absolute before:left-0 before:top-0 before:w-1 before:h-full before:bg-yellow-100 hover:before:bg-yellow-400 before:transition-colors group">
+                                        <div className="absolute -left-2 top-1 w-5 h-5 bg-yellow-400 rotate-45"></div>
+                                        <div className="flex justify-between items-start mb-4">
                                             <div>
-                                                <h3 className="text-xl font-bold text-slate-900">{exp.position}</h3>
-                                                <div className="text-base text-slate-700 font-semibold">{exp.company}</div>
+                                                <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-2 group-hover:text-yellow-600 transition-colors">{exp.position}</h3>
+                                                <div className="text-lg text-slate-700 font-bold">{exp.company}</div>
                                             </div>
-                                            <span className="text-sm text-slate-500 font-semibold bg-yellow-50 px-3 py-1 rounded">{exp.startDate} – {exp.endDate || 'Now'}</span>
+                                            <span className="text-xs font-black uppercase bg-yellow-400 text-slate-900 px-4 py-2">{exp.startDate} – {exp.endDate || 'Jetzt'}</span>
                                         </div>
-                                        <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{exp.description}</p>
+                                        <p className="text-base text-slate-700 leading-loose whitespace-pre-line">{exp.description}</p>
                                     </div>
                                 ))}
                             </div>
                         </section>
                     )}
 
-                    {/* Education & Skills Grid */}
-                    <div className="grid grid-cols-2 gap-10">
+                    <div className="grid grid-cols-2 gap-20">
                         {education.length > 0 && (
-                            <section className="page-break-inside-avoid">
-                                <h2 className="text-2xl font-black text-slate-900 mb-6 uppercase tracking-wide flex items-center gap-3">
-                                    <span className="w-2 h-8 bg-yellow-400"></span> Education
+                            <section>
+                                <h2 className="text-3xl font-black text-slate-900 mb-10 uppercase tracking-tight flex items-center gap-4">
+                                    <span className="w-3 h-12 bg-yellow-400 -skew-x-12"></span> Bildung
                                 </h2>
-                                <div className="space-y-4">
+                                <div className="space-y-8">
                                     {education.map(edu => (
-                                        <div key={edu.id}>
-                                            <h3 className="text-base font-bold text-slate-900">{edu.degree}</h3>
-                                            <div className="text-sm text-slate-600">{edu.institution}</div>
-                                            <div className="text-xs text-slate-500">{edu.graduationDate}</div>
+                                        <div key={edu.id} className="p-6 bg-slate-50 border-l-4 border-yellow-400">
+                                            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">{edu.degree}</h3>
+                                            <div className="text-base text-slate-700 font-bold mt-2">{edu.institution}</div>
+                                            <div className="text-xs font-black text-yellow-600 uppercase mt-1">{edu.graduationDate}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -197,13 +196,13 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                         )}
 
                         {skills.length > 0 && (
-                            <section className="page-break-inside-avoid">
-                                <h2 className="text-2xl font-black text-slate-900 mb-6 uppercase tracking-wide flex items-center gap-3">
-                                    <span className="w-2 h-8 bg-yellow-400"></span> Skills
+                            <section>
+                                <h2 className="text-3xl font-black text-slate-900 mb-10 uppercase tracking-tight flex items-center gap-4">
+                                    <span className="w-3 h-12 bg-yellow-400 -skew-x-12"></span> Fähigkeiten
                                 </h2>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-3">
                                     {skills.map(s => (
-                                        <span key={s.id} className="px-3 py-1 bg-slate-900 text-white text-xs font-bold uppercase">
+                                        <span key={s.id} className="px-5 py-3 bg-slate-900 text-yellow-400 text-xs font-black uppercase tracking-wider hover:bg-yellow-400 hover:text-slate-900 transition-all cursor-default">
                                             {s.name}
                                         </span>
                                     ))}
@@ -243,13 +242,12 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                     </div>
                 </header>
 
-                {/* Summary */}
                 {personalInfo.summary && (
                     <section className="mb-10 bg-white p-8 rounded-2xl shadow-lg">
                         <h2 className="text-sm font-black uppercase tracking-wider text-pink-600 mb-4 flex items-center gap-2">
                             <i className="fa fa-user text-pink-500"></i> About Me
                         </h2>
-                        <p className="text-sm leading-relaxed text-slate-700">{personalInfo.summary}</p>
+                        <p className="text-base leading-relaxed text-slate-700 whitespace-pre-line break-words">{personalInfo.summary}</p>
                     </section>
                 )}
 
@@ -264,14 +262,14 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                                 <div key={exp.id} className="bg-white p-8 rounded-2xl shadow-lg page-break-inside-avoid relative overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-100 to-purple-100 rounded-bl-full opacity-50"></div>
                                     <div className="relative z-10">
-                                        <div className="flex justify-between items-start mb-3">
-                                            <div>
+                                        <div className="flex justify-between items-start mb-3 flex-wrap gap-2">
+                                            <div className="flex-1 min-w-0">
                                                 <h3 className="text-lg font-bold text-slate-900">{exp.position}</h3>
                                                 <div className="text-base text-pink-600 font-semibold">{exp.company}</div>
                                             </div>
-                                            <span className="text-sm text-white bg-gradient-to-r from-pink-500 to-purple-500 px-3 py-1 rounded-full font-semibold">{exp.startDate} – {exp.endDate || 'Present'}</span>
+                                            <span className="text-sm text-white bg-gradient-to-r from-pink-500 to-purple-500 px-3 py-1 rounded-full font-semibold whitespace-nowrap">{exp.startDate} – {exp.endDate || 'Present'}</span>
                                         </div>
-                                        <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{exp.description}</p>
+                                        <p className="text-base text-slate-700 leading-relaxed whitespace-pre-line break-words">{exp.description}</p>
                                     </div>
                                 </div>
                             ))}
@@ -343,10 +341,9 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                     </div>
                 </header>
 
-                {/* Summary */}
                 {personalInfo.summary && (
                     <section className="mb-16">
-                        <p className="text-lg leading-relaxed text-slate-700 font-light max-w-3xl">{personalInfo.summary}</p>
+                        <p className="text-xl leading-loose text-slate-700 font-light max-w-3xl whitespace-pre-line break-words">{personalInfo.summary}</p>
                     </section>
                 )}
 
@@ -357,12 +354,12 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                         <div className="space-y-12">
                             {experience.map(exp => (
                                 <div key={exp.id} className="page-break-inside-avoid">
-                                    <div className="flex justify-between items-baseline mb-3">
+                                    <div className="flex justify-between items-baseline mb-3 flex-wrap gap-2">
                                         <h3 className="text-2xl font-light text-slate-900">{exp.position}</h3>
-                                        <span className="text-sm text-slate-500">{exp.startDate} – {exp.endDate || 'Present'}</span>
+                                        <span className="text-sm text-slate-500 whitespace-nowrap">{exp.startDate} – {exp.endDate || 'Present'}</span>
                                     </div>
                                     <div className="text-base text-slate-600 font-light mb-4">{exp.company}</div>
-                                    <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line font-light">{exp.description}</p>
+                                    <p className="text-base text-slate-700 leading-loose whitespace-pre-line font-light break-words">{exp.description}</p>
                                 </div>
                             ))}
                         </div>
@@ -430,11 +427,10 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                 </header>
 
                 <div className="p-12">
-                    {/* Summary */}
                     {personalInfo.summary && (
                         <section className="mb-10 pb-8 border-b border-amber-400/30">
                             <h2 className="text-lg font-black uppercase tracking-wider text-amber-400 mb-4">Executive Profile</h2>
-                            <p className="text-base leading-relaxed text-slate-200">{personalInfo.summary}</p>
+                            <p className="text-lg leading-loose text-slate-200 whitespace-pre-line break-words">{personalInfo.summary}</p>
                         </section>
                     )}
 
@@ -445,14 +441,14 @@ const CVPreview: React.FC<Props> = ({ data, template, lang }) => {
                             <div className="space-y-8">
                                 {experience.map(exp => (
                                     <div key={exp.id} className="page-break-inside-avoid">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div>
+                                        <div className="flex justify-between items-start mb-2 flex-wrap gap-2">
+                                            <div className="flex-1 min-w-0">
                                                 <h3 className="text-2xl font-bold text-white">{exp.position}</h3>
                                                 <div className="text-lg text-amber-400 font-semibold">{exp.company}</div>
                                             </div>
-                                            <span className="text-sm text-slate-300 bg-amber-400/10 px-4 py-2 rounded-full border border-amber-400/30">{exp.startDate} – {exp.endDate || 'Present'}</span>
+                                            <span className="text-sm text-slate-300 bg-amber-400/10 px-4 py-2 rounded-full border border-amber-400/30 whitespace-nowrap">{exp.startDate} – {exp.endDate || 'Present'}</span>
                                         </div>
-                                        <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">{exp.description}</p>
+                                        <p className="text-base text-slate-300 leading-loose whitespace-pre-line break-words">{exp.description}</p>
                                     </div>
                                 ))}
                             </div>

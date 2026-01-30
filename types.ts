@@ -72,7 +72,23 @@ export type TemplateType =
   | 'berlin'           // Modern Minimalist
   | 'tokyo'            // Creative Professional
   | 'stockholm'        // Scandinavian Design
-  | 'dubai';           // Luxury Executive
+  | 'dubai'            // Luxury Executive
+  | 'atlas'            // ATS-Friendly Professional
+  | 'prism'            // Modern with Accent
+  | 'nexus'            // Two-Column Professional
+  | 'zenith'           // Ultra-Modern Glassmorphism
+  | 'quantum'          // Elegant Serif
+  | 'spectrum'         // Colorful Modern
+  | 'cascade'          // Timeline Design
+  | 'meridian'         // Clean Corporate
+  | 'echo'             // Minimal Monochrome
+  | 'nova'             // Gradient Background
+  | 'orbit'            // Circular Elements
+  | 'vertex'           // Sharp Angular
+  | 'elite'            // Gold & Black Executive
+  | 'minimal'          // Pure Whitespace Professional
+  | 'silicon_valley'   // Tech/Startup Engineering
+  | 'parisian';        // Luxury/High-End Fashion
 
 export enum BuilderStep {
   TEMPLATE = 'Style Selection',
@@ -89,3 +105,8 @@ export enum BuilderStep {
 
 export type AppView = 'landing' | 'selection' | 'builder';
 export type Language = 'en' | 'fr' | 'ar';
+
+export interface TemplateProps {
+  data: CVData;
+  lang: Language;
+}

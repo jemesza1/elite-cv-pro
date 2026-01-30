@@ -45,7 +45,7 @@ const SelectionView: React.FC<SelectionViewProps> = ({ onSelect, onBack, lang })
 
   return (
     <div className="min-h-screen bg-[var(--cv-bg)] flex flex-col" dir={isRtl ? 'rtl' : 'ltr'}>
-      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,.pdf" />
+      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".pdf,.doc,.docx" />
 
       <header className="glass-panel border-b border-[var(--cv-border)] p-6 flex items-center justify-between sticky top-0 z-50">
         <button onClick={onBack} className="w-12 h-12 flex items-center justify-center text-[var(--cv-text-muted)] hover:bg-[var(--cv-border)] rounded-full transition-all">
@@ -74,8 +74,8 @@ const SelectionView: React.FC<SelectionViewProps> = ({ onSelect, onBack, lang })
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
               {[
                 { id: 'new', icon: 'fa-file-circle-plus', title: translations.newCv[lang], desc: translations.newCvDesc[lang], color: 'text-[var(--cv-accent)]', bg: 'bg-blue-50', enabled: true },
-                { id: 'canada', icon: 'fa-map-location-dot', title: translations.canada[lang], desc: translations.canadaDesc[lang], color: 'text-red-600', bg: 'bg-red-50', badge: true, enabled: false, comingSoon: true },
-                { id: 'import', icon: 'fa-cloud-arrow-up', title: translations.importCv[lang], desc: translations.importCvDesc[lang], color: 'text-indigo-600', bg: 'bg-indigo-50', action: () => fileInputRef.current?.click(), enabled: false, comingSoon: true }
+                { id: 'canada', icon: 'fa-map-location-dot', title: translations.canada[lang], desc: translations.canadaDesc[lang], color: 'text-red-600', bg: 'bg-red-50', badge: true, enabled: true },
+                { id: 'import', icon: 'fa-cloud-arrow-up', title: translations.importCv[lang], desc: translations.importCvDesc[lang], color: 'text-indigo-600', bg: 'bg-indigo-50', action: () => fileInputRef.current?.click(), enabled: true }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -83,12 +83,7 @@ const SelectionView: React.FC<SelectionViewProps> = ({ onSelect, onBack, lang })
                   disabled={!item.enabled}
                   className={`group relative bg-[var(--cv-card)] p-10 rounded-[2.5rem] border border-[var(--cv-border)] transition-all duration-300 flex flex-col items-center text-center space-y-6 overflow-hidden ${item.enabled ? 'hover:border-[var(--cv-accent)] hover:shadow-2xl cursor-pointer' : 'opacity-60 cursor-not-allowed'}`}
                 >
-                  {item.comingSoon && (
-                    <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider shadow-lg z-20">
-                      Coming Soon
-                    </div>
-                  )}
-                  {item.badge && !item.comingSoon && (
+                  {item.badge && (
                     <div className="absolute top-0 right-0 w-16 h-16 bg-red-600 text-white flex items-center justify-center rotate-45 translate-x-6 -translate-y-6 shadow-lg z-10">
                       <i className="fa fa-leaf text-xs -rotate-45 mt-4 mr-2"></i>
                     </div>

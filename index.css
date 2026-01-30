@@ -22,16 +22,17 @@
   /* Slate-200 */
   --cv-border-focus: #2563EB;
 
+  --cv-radius-sm: 8px;
   --cv-radius: 16px;
-  /* Modern rounded corners */
-  --cv-padding: 20px;
+  --cv-radius-lg: 24px;
+  --cv-padding: 32px;
 
-  --cv-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --cv-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --cv-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --cv-shadow-pro: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --cv-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --cv-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --cv-shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --cv-shadow-pro: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
-  --cv-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --cv-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark-mode {
@@ -41,10 +42,10 @@
   /* Slate-900 */
   --cv-card: #0F172A;
 
-  --cv-text-header: #F1F5F9;
-  /* Slate-100 */
-  --cv-text-main: #E2E8F0;
-  /* Slate-200 */
+  --cv-text-header: #F8FAFC;
+  /* Slate-50 - Better contrast */
+  --cv-text-main: #F1F5F9;
+  /* Slate-100 - More readable */
   --cv-text-muted: #94A3B8;
   /* Slate-400 */
 
@@ -82,11 +83,22 @@ body {
 h1,
 h2,
 h3,
-h4,
-class-header {
+h4 {
   font-family: 'Playfair Display', serif;
-  /* Use Serif for elegant headers */
   color: var(--cv-text-header);
+  letter-spacing: -0.02em;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 
 @keyframes fadeIn {
@@ -129,158 +141,541 @@ class-header {
 }
 
 @media print {
+
+  /* ===========================
+     PAGE SETUP & MARGINS
+     =========================== */
   @page {
+    /* Zero margin removes browser headers/footers */
     margin: 0;
-    size: auto;
+    size: A4 portrait;
   }
 
-  body {
+  /* Additional @page rules for better browser support */
+  @page :first {
+    margin-top: 0;
+  }
+
+  @page :left {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  @page :right {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* ===========================
+     BODY & HTML RESET
+     =========================== */
+  body,
+  html {
     background: white !important;
     height: auto !important;
     width: 100% !important;
     overflow: visible !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Remove body padding - let CV control its own margins */
   }
 
-  /* Properly hide UI elements using Tailwind classes is preferred, 
-     but we enforce it here for safety */
+  /* ===========================
+     HIDE UI ELEMENTS
+     =========================== */
   .no-print,
   nav,
   .builder-controls,
   button,
   input,
   select,
-  textarea {
+  textarea,
+  aside,
+  header.no-print,
+  .glass-panel {
     display: none !important;
   }
 
-  /* Ensure the print version is visible */
-  .print\:block {
+  /* ===========================
+     SHOW PRINT VERSION
+     =========================== */
+  .print\\:block {
     display: block !important;
   }
 
-  /* CRITICAL: Force images to display and print */
+  /* ===========================
+     CV CONTAINER RESET
+     =========================== */
+  .cv-theme-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    min-height: auto !important;
+    height: auto !important;
+    display: block !important;
+    overflow: visible !important;
+    width: 100% !important;
+  }
+
+  .cv-container,
+  [class*="min-h-"] {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  /* Target specifically the template containers */
+  .cv-preview-container {
+    min-height: 0 !important;
+    height: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    display: block !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .cv-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  /* ===========================
+     COLOR & BACKGROUND FIXES (COMPREHENSIVE)
+     =========================== */
+  /* Force print color accuracy for all elements */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Background preservation - Ensure templates look exactly like the preview */
+  [class*="bg-"],
+  [class*="from-"],
+  [class*="to-"],
+  header,
+  section,
+  footer,
+  aside {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure all colored backgrounds print */
+  [class*="bg-"],
+  header,
+  section,
+  footer {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Only hide specific decorative elements if they break layout */
+  .decorative-blob {
+    display: none !important;
+  }
+
+  /* ===========================
+     TEXT COLOR FIXES (ENHANCED)
+     =========================== */
+  /* Ensure light/white text colors are preserved on dark backgrounds */
+  .text-white,
+  .text-slate-50,
+  .text-slate-100,
+  .text-slate-200,
+  .text-slate-300,
+  span.text-white,
+  div.text-white,
+  p.text-white,
+  h1.text-white,
+  h2.text-white,
+  h3.text-white {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Preserve accent colors while ensuring readability */
+  .text-amber-400,
+  .text-amber-500,
+  .text-yellow-400,
+  .text-yellow-500,
+  .text-blue-500,
+  .text-blue-600,
+  .text-pink-500,
+  .text-pink-600,
+  .text-purple-500,
+  .text-purple-600,
+  .text-red-600,
+  .text-red-700,
+  .text-red-800,
+  .text-red-900,
+  .text-emerald-600 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Special handling for gradient text (convert to solid dark) */
+  [class*="bg-gradient-to"][class*="bg-clip-text"],
+  .bg-clip-text {
+    background: none !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+  }
+
+  /* ===========================
+     HEADER TEXT - FORCE MAXIMUM CONTRAST
+     =========================== */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .text-4xl,
+  .text-5xl,
+  .text-6xl {
+    color: #0f172a !important;
+    /* Maximum contrast */
+    font-weight: 700 !important;
+    /* Ensure boldness prints */
+  }
+
+  /* Keep template-specific backgrounds */
+  .cv-preview-container.bg-slate-900,
+  .cv-preview-container.bg-black {
+    background-color: inherit !important;
+    color: inherit !important;
+  }
+
+  /* ===========================
+     CARD & SECTION BACKGROUNDS
+     =========================== */
+  /* Convert colored cards to subtle print-friendly versions */
+  .bg-white\/10,
+  .bg-white\/20,
+  .bg-slate-100,
+  .bg-slate-50,
+  [class*="backdrop-blur"],
+  [class*="bg-amber-400\/10"],
+  [class*="bg-yellow-50"],
+  [class*="bg-pink-100"],
+  [class*="bg-purple-100"] {
+    background: #f9fafb !important;
+    /* Very light gray - subtle but visible */
+    backdrop-filter: none !important;
+  }
+
+  /* White cards stay white */
+  .bg-white {
+    background: white !important;
+  }
+
+  /* ===========================
+     BORDER FIXES
+     =========================== */
+  /* Convert invisible borders to visible */
+  .border-white,
+  .border-transparent,
+  .border-slate-800,
+  .border-slate-900 {
+    border-color: #d1d5db !important;
+    /* gray-300 */
+  }
+
+  /* Preserve accent color borders */
+  .border-red-700,
+  .border-red-800,
+  .border-red-900 {
+    border-color: #991b1b !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .border-yellow-400,
+  .border-amber-400 {
+    border-color: #fbbf24 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .border-blue-500,
+  .border-blue-600 {
+    border-color: #2563eb !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* ===========================
+     PHOTO & IMAGE HANDLING
+     =========================== */
   img {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     max-width: 100% !important;
     page-break-inside: avoid !important;
+  }
+
+  /* Ensure photo borders print correctly */
+  img[class*="border-"] {
+    border-width: 3px !important;
+    border-color: #d1d5db !important;
+  }
+
+  /* Gold/amber borders for luxury templates */
+  img.border-amber-400,
+  img[class*="border-8"].border-amber-400 {
+    border-color: #fbbf24 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Ensure the CV container itself is fully visible and reset */
-  .cv-theme-wrapper {
-    padding: 0 !important;
-    margin: 0 !important;
-    background-color: white !important;
-    min-height: auto !important;
-    height: auto !important;
-    display: block !important;
-    overflow: visible !important;
-    width: 100% !important;
-  }
-
-  .cv-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    min-height: auto !important;
-    height: auto !important;
-    overflow: visible !important;
-    page-break-after: avoid;
-    print-color-adjust: exact !important;
-    -webkit-print-color-adjust: exact !important;
-  }
-
-  /* Prevent sections from splitting awkwardly */
-  section {
-    page-break-inside: avoid;
-    margin-bottom: 0 !important;
-  }
-
-  /* Color accuracy */
-  * {
+  /* ===========================
+     ICONS - FONT AWESOME
+     =========================== */
+  i,
+  .fa,
+  .fas,
+  .far,
+  .fab {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  .cv-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    min-height: auto !important;
-    height: auto !important;
-    overflow: visible !important;
-    page-break-after: avoid;
-    print-color-adjust: exact !important;
+  /* Ensure accent-colored icons print */
+  i.text-amber-400,
+  i.text-yellow-400,
+  i.text-pink-500,
+  i.text-purple-500,
+  i.text-red-700 {
     -webkit-print-color-adjust: exact !important;
-  }
-
-  /* Targeted overrides for the preview component itself */
-  .cv-preview-container {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    /* Critical for multi-page */
-    min-height: auto !important;
-    height: auto !important;
-    display: block !important;
     print-color-adjust: exact !important;
+  }
+
+  /* ===========================
+     BADGE & TAG STYLING FOR PRINT
+     =========================== */
+  /* Skills badges - ensure they print with subtle backgrounds */
+  span[class*="bg-gradient-to"],
+  .bg-gradient-to-r,
+  .bg-gradient-to-br {
+    background: #e5e7eb !important;
+    /* gray-200 - subtle but visible */
+    color: #1f2937 !important;
+    /* gray-800 - dark text */
+  }
+
+  /* Dark badges (Berlin template, Dubai template) */
+  span.bg-slate-900,
+  .bg-slate-900.text-white {
+    background: #1f2937 !important;
+    color: white !important;
     -webkit-print-color-adjust: exact !important;
-    background: white !important;
+    print-color-adjust: exact !important;
   }
 
-  /* HIGH CONTRAST TEXT FOR PRINTING - SELECTIVE APPROACH */
-  /* Only improve readability without destroying template designs */
-
-  /* Ensure very light text becomes readable (but preserve intentional colors) */
-  .text-slate-300,
-  .text-slate-400,
-  .text-gray-300,
-  .text-gray-400 {
-    color: #475569 !important;
-    /* slate-600 - readable but not too dark */
+  /* Colored badges should maintain subtle tint */
+  .bg-amber-400\/10,
+  span[class*="bg-amber"] {
+    background: #fef3c7 !important;
+    /* amber-100 */
+    color: #78350f !important;
+    /* amber-900 */
   }
 
-  /* Preserve template-specific header colors and styles */
-  /* Only add weight for clarity, don't force colors */
-  h1,
-  h2,
-  h3 {
-    font-weight: 600 !important;
+  /* ===========================
+     PAGE BREAKS - ENHANCED
+     =========================== */
+  /* Prevent breaking within sections */
+  section,
+  article,
+  .page-break-inside-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  /* Prevent sections from splitting awkwardly */
-  section {
-    page-break-inside: avoid;
-    margin-bottom: 20px;
+  /* Prevent breaking experience/education items */
+  .experience-item,
+  div[class*="space-y-"]>div,
+  .cv-preview-container>div>section>div>div {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  /* Disable all animations for print */
+  /* ===========================
+     DISABLE ANIMATIONS & TRANSITIONS
+     =========================== */
   * {
     animation: none !important;
     transition: none !important;
   }
 
-  /* PRESERVE template backgrounds and colors - only fix truly problematic ones */
-  /* Remove the aggressive background overrides that made everything white */
-
-  /* Only fix templates with pure black backgrounds that would waste ink */
-  .bg-black {
-    background: #1e293b !important;
-    /* Dark slate instead of pure black */
+  /* ===========================
+     SPACING ADJUSTMENTS FOR PRINT
+     =========================== */
+  /* Aggressively reduce excessive spacing */
+  .p-16,
+  .p-12,
+  .p-10,
+  .p-8 {
+    padding: 0.5rem !important;
   }
 
-  /* Preserve gradient backgrounds - they're part of the design */
-  /* Keep colored text - it's intentional for each template */
+  .mb-16,
+  .mb-12,
+  .mb-10,
+  .mb-8 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .pb-16,
+  .pb-12,
+  .pb-10,
+  .pb-8 {
+    padding-bottom: 0.75rem !important;
+  }
+
+  /* Reduce Gaps and Vertical Spacing */
+  .gap-16,
+  .gap-12,
+  .gap-10,
+  .gap-8 {
+    gap: 0.5rem !important;
+  }
+
+  .space-y-16> :not([hidden])~ :not([hidden]),
+  .space-y-12> :not([hidden])~ :not([hidden]),
+  .space-y-10> :not([hidden])~ :not([hidden]),
+  .space-y-8> :not([hidden])~ :not([hidden]) {
+    margin-top: 0.5rem !important;
+  }
+
+  /* Compact headers for print */
+  header.mb-16,
+  header.mb-12,
+  header.mb-10 {
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  /* Shrink images in print to save vertical space */
+  img.w-48,
+  img.w-44,
+  img.w-40,
+  img.w-32 {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  /* Compress summary/profile sections */
+  section.mb-12,
+  section.mb-10 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* ===========================
+     FONT SIZE OPTIMIZATION
+     =========================== */
+  /* Minimum readable sizes */
+  .text-xs {
+    font-size: 9pt !important;
+  }
+
+  .text-sm {
+    font-size: 10pt !important;
+  }
+
+  .text-base {
+    font-size: 11pt !important;
+  }
+
+  .text-lg {
+    font-size: 12pt !important;
+  }
+
+  /* Headers - proportional for print */
+  h1,
+  .text-7xl,
+  .text-6xl,
+  .text-5xl {
+    font-size: 18pt !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  h2,
+  .text-4xl,
+  .text-3xl {
+    font-size: 14pt !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.2rem !important;
+  }
+
+  h3,
+  .text-2xl,
+  .text-xl {
+    font-size: 12pt !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Force multi-column sections to stay multi-column in print */
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    display: grid !important;
+  }
+
+  /* ===========================
+     TEMPLATE-SPECIFIC FINE-TUNING
+     =========================== */
+
+  /* Vogue template - maintain gold accent color */
+  [style*="color: #D4AF37"],
+  [style*="borderColor: #D4AF37"] {
+    color: #a16207 !important;
+    /* darker gold for print */
+    border-color: #a16207 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Montreal template - ensure red accents print */
+  .text-red-700,
+  .border-red-700,
+  .bg-red-700 {
+    color: #991b1b !important;
+    border-color: #991b1b !important;
+    background-color: #991b1b !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Berlin template - ensure yellow accents print */
+  .border-yellow-400,
+  .bg-yellow-400,
+  span.bg-yellow-400 {
+    border-color: #facc15 !important;
+    background-color: #facc15 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
+
 
 
 /* Elite Professional Specific */
@@ -373,14 +768,318 @@ aside.no-print nav {
 .model-tokyo,
 .model-stockholm,
 .model-dubai {
-  @apply transition-all duration-700;
+  transition: all 700ms;
 }
 
 /* Navigation Sidebar Fix */
 aside nav {
-  @apply flex flex-col gap-3 w-full;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
 }
 
 aside nav button {
-  @apply text-left w-full transition-all;
+  text-align: left;
+  width: 100%;
+  transition: all 150ms;
+}
+
+/* Premium Pro UI Components */
+.pro-label {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cv-text-muted);
+}
+
+.pro-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--cv-accent);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pro-card {
+  background: white;
+  border-radius: var(--cv-radius);
+  padding: 2rem;
+  box-shadow: var(--cv-shadow);
+  border: 1px solid var(--cv-border);
+}
+
+.dark-mode .pro-card {
+  background: var(--cv-sidebar);
+  border-color: var(--cv-border);
+}
+
+.cv-photo-pro {
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: var(--cv-shadow-lg);
+  transition: transform 0.3s ease;
+}
+
+.cv-photo-pro:hover {
+  transform: scale(1.05);
+}
+
+/* Fix for unreadable text on dark backgrounds in UI */
+.cv-preview-container[class*="bg-slate-9"] .text-slate-800,
+.cv-preview-container[class*="bg-slate-9"] .text-slate-700,
+.cv-preview-container[class*="bg-slate-8"] .text-slate-800,
+.cv-preview-container[class*="bg-slate-8"] .text-slate-700,
+.cv-preview-container.bg-black .text-slate-800,
+.cv-preview-container.bg-black .text-slate-700 {
+  color: #cbd5e1 !important;
+  /* light slate-300 for readability on dark */
+}
+
+.cv-preview-container[class*="bg-slate-9"] .text-slate-600,
+.cv-preview-container[class*="bg-slate-8"] .text-slate-600,
+.cv-preview-container.bg-black .text-slate-600 {
+  color: #94a3b8 !important;
+  /* light slate-400 */
+}
+
+/* ==============================================
+   NEW PROFESSIONAL TEMPLATES STYLES (2024)
+   ============================================== */
+
+/* The Atlas - ATS-Friendly Professional */
+.model-atlas {
+  transition: all 0.7s ease;
+}
+
+.model-atlas.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* The Prism - Modern Minimalist with Accent */
+.model-prism {
+  transition: all 0.7s ease;
+}
+
+.model-prism.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.model-prism .backdrop-blur-xl {
+  backdrop-filter: blur(24px);
+}
+
+/* The Nexus - Two-Column Professional */
+.model-nexus {
+  transition: all 0.7s ease;
+}
+
+.model-nexus.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* The Zenith - Ultra-Modern Glassmorphism */
+.model-zenith {
+  transition: all 0.7s ease;
+}
+
+.model-zenith.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.model-zenith .backdrop-blur-xl {
+  backdrop-filter: blur(24px);
+}
+
+/* Glassmorphism card effects for Zenith and Prism */
+.bg-white\/70 {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-white\/80 {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Print optimizations for new templates */
+@media print {
+
+  /* Remove browser headers and footers */
+  @page {
+    size: A4;
+    margin: 0mm !important;
+  }
+
+  /* Force page context to A4 and hide info */
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Universal Color Preservation */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Specific Template Fixes */
+  .model-atlas,
+  .model-prism,
+  .model-nexus,
+  .model-zenith {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Preserve glassmorphism in PDF */
+  .model-prism .backdrop-blur-xl,
+  .model-zenith .backdrop-blur-xl {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+  }
+
+  /* Ensure proper page breaks */
+  .model-atlas .cv-preview-container,
+  .model-prism .cv-preview-container,
+  .model-nexus .cv-preview-container,
+  .model-zenith .cv-preview-container,
+  .model-quantum .cv-preview-container,
+  .model-spectrum .cv-preview-container,
+  .model-cascade .cv-preview-container,
+  .model-meridian .cv-preview-container,
+  .model-echo .cv-preview-container,
+  .model-nova .cv-preview-container,
+  .model-orbit .cv-preview-container,
+  .model-vertex .cv-preview-container,
+  .model-elite .cv-preview-container,
+  .model-minimal .cv-preview-container,
+  .model-silicon-valley .cv-preview-container,
+  .model-parisian .cv-preview-container {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* Force Dark/Premium backgrounds for specific models */
+  .model-elite .cv-preview-container,
+  .model-elite [class*="bg-[#0F0F0F]"],
+  .model-silicon-valley .cv-preview-container,
+  .model-silicon-valley [class*="bg-[#0a0a0a]"],
+  .model-silicon-valley [class*="bg-[#171717]"],
+  .model-echo .cv-preview-container,
+  .model-echo [class*="bg-black"],
+  .model-orbit .cv-preview-container {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force gold colors in Elite model for print */
+  .model-elite [class*="text-[#D4AF37]"],
+  .model-elite [class*="border-[#D4AF37]"] {
+    color: #a16207 !important;
+    border-color: #a16207 !important;
+  }
+}
+
+/* ==============================================
+   MORE PROFESSIONAL TEMPLATES STYLES
+   ============================================== */
+
+/* The Quantum - Elegant Serif */
+.model-quantum {
+  transition: all 0.7s ease;
+}
+
+.model-quantum.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* The Spectrum - Colorful Modern */
+.model-spectrum {
+  transition: all 0.7s ease;
+}
+
+.model-spectrum.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* The Cascade - Timeline Design */
+.model-cascade {
+  transition: all 0.7s ease;
+}
+
+.model-cascade.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* The Meridian - Clean Corporate */
+.model-meridian {
+  transition: all 0.7s ease;
+}
+
+.model-meridian.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* The Echo - Minimal Monochrome */
+.model-echo {
+  transition: all 0.7s ease;
+}
+
+.model-echo.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* The Nova - Gradient Background */
+.model-nova {
+  transition: all 0.7s ease;
+}
+
+.model-nova.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.model-nova .backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+}
+
+/* The Orbit - Circular Elements */
+.model-orbit {
+  transition: all 0.7s ease;
+}
+
+.model-orbit.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.model-orbit .backdrop-blur {
+  backdrop-filter: blur(8px);
+}
+
+/* The Vertex - Sharp Angular */
+.model-vertex {
+  transition: all 0.7s ease;
+}
+
+.model-vertex.cv-preview-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
 }
