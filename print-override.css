@@ -6,9 +6,12 @@
         margin: 0;
     }
 
-    body {
+    body,
+    html {
         margin: 0 !important;
         padding: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
     }
 
     .no-print {
@@ -23,11 +26,27 @@
         transition: none !important;
     }
 
-    /* Ensure content is visible */
-    .cv-preview-container {
+    /* CRITICAL: Ensure all content is visible */
+    .cv-preview-container,
+    .cv-preview-container>*,
+    .cv-container,
+    section,
+    div,
+    header,
+    main {
         min-height: 0 !important;
+        max-height: none !important;
+        height: auto !important;
         overflow: visible !important;
         display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Force sections to show */
+    section {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
     }
 
     /* Page breaks */
