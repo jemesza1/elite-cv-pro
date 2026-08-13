@@ -73,7 +73,7 @@ const getLangName = (lang) => {
   }
 };
 
-// ========== HEALTH / DEBUG ==========
+// Health
 app.get('/api/health', (req, res) => {
   const candidates = [
     path.join(cwd, 'dist'),
@@ -95,8 +95,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ========== API ROUTES ==========
-
+// API Routes
 app.post('/api/parse', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -198,7 +197,7 @@ app.post('/api/summary', async (req, res) => {
   }
 });
 
-// ========== STATIC FRONTEND ==========
+// Static frontend
 const candidates = [
   path.join(cwd, 'dist'),
   path.join(__dirname, '..', 'dist'),
@@ -211,29 +210,29 @@ console.log('=== EliteCV Pro Startup ===');
 console.log('cwd:', cwd);
 console.log('__dirname:', __dirname);
 console.log('PORT:', port);
-console.log('dist candidates:', candidates.map((p) => `${p} => ${fs.existsSync(p)}`));
+console.log('dist candidates:', candidates.map((p) => p + ' => ' + fs.existsSync(p)));
 console.log('selected distPath:', distPath || 'NONE');
 
 if (distPath) {
   console.log('Serving static from:', distPath);
   console.log('Files:', fs.readdirSync(distPath));
-  app.use(express.static(distPath, { index: false }));
+  app.use(express.static(distPath));
 
-  // Express 5 compatible catch-all
-  app.get('/{*splat}', (req, res) => {
+  // Classic Express 4 SPA fallback
+  app.get('*', (req, res) => {
     res.sendFile(path.join(distPath, 'index.html'));
   });
 } else {
   console.error('CRITICAL: dist/index.html not found');
-  app.use((req, res) => {
+  app.get('*', (req, res) => {
     res.status(404).type('html').send(`<!DOCTYPE html>
-<html><head><title>EliteCV Pro - Build Missing</title></head>
+<html><head><title>EliteCV Pro</title></head>
 <body style="font-family:system-ui;padding:40px;background:#0f172a;color:#e2e8f0">
-  <h1>EliteCV Pro</h1>
-  <p>Frontend build (dist/) was not found.</p>
+  <h1>EliteCV Pro — Frontend missing</h1>
+  <p>dist/ folder was not found after build.</p>
   <p><b>cwd:</b> ${cwd}</p>
   <p><b>__dirname:</b> ${__dirname}</p>
-  <pre style="background:#1e293b;padding:16px;border-radius:8px;overflow:auto">${JSON.stringify(
+  <pre style="background:#1e293b;padding:16px;border-radius:8px">${JSON.stringify(
     candidates.map((p) => ({
       path: p,
       exists: fs.existsSync(p),
@@ -242,13 +241,13 @@ if (distPath) {
     null,
     2
   )}</pre>
-  <p><a href="/api/health" style="color:#38bdf8">Check /api/health</a></p>
+  <p><a href="/api/health" style="color:#38bdf8">/api/health</a></p>
 </body></html>`);
   });
 }
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`EliteCV Pro listening on 0.0.0.0:${port}`);
+  console.log('EliteCV Pro listening on 0.0.0.0:' + port);
 });
 
 process.on('SIGTERM', () => process.exit(0));
