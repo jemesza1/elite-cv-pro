@@ -1,14 +1,18 @@
-
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 // Configure Multer for memory storage (file handling)
 const upload = multer({ storage: multer.memoryStorage() });
@@ -67,6 +71,8 @@ const getLangName = (lang) => {
         default: return 'English';
     }
 };
+
+// ========== API ROUTES ==========
 
 // Route: Parse CV (accepts file upload)
 app.post('/api/parse', upload.single('file'), async (req, res) => {
@@ -188,9 +194,22 @@ app.post('/api/summary', async (req, res) => {
     }
 });
 
+// ========== SERVE FRONTEND IN PRODUCTION ==========
+const distPath = path.join(__dirname, '..', 'dist');
+app.use(express.static(distPath));
+
+// SPA fallback - send index.html for any non-API route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'), (err) => {
+    if (err) {
+      res.status(404).send('Frontend not built. Run "npm run build" first.');
+    }
+  });
+});
+
 // Start server with proper error handling
 const server = app.listen(port, () => {
-    console.log(`Backend API running at http://localhost:${port}`);
+    console.log(`EliteCV Pro running at http://localhost:${port}`);
 }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
         console.error(`Port ${port} is already in use. Please free up the port or change the server port.`);
