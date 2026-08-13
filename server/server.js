@@ -11,11 +11,11 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const cwd = process.cwd();
 
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configure Multer for memory storage (file handling)
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors());
@@ -73,25 +73,42 @@ const getLangName = (lang) => {
     }
 };
 
+// Health + debug
+app.get('/api/health', (req, res) => {
+  const candidates = [
+    path.join(cwd, 'dist'),
+    path.join(__dirname, '..', 'dist'),
+    path.join(__dirname, 'dist'),
+  ];
+  const found = candidates.map(p => ({
+    path: p,
+    exists: fs.existsSync(p),
+    files: fs.existsSync(p) ? fs.readdirSync(p).slice(0, 20) : []
+  }));
+  res.json({
+    status: 'ok',
+    cwd,
+    __dirname,
+    nodeEnv: process.env.NODE_ENV,
+    distCandidates: found
+  });
+});
+
 // ========== API ROUTES ==========
 
 app.post('/api/parse', upload.single('file'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
         const base64Data = req.file.buffer.toString('base64');
         const mimeType = req.file.mimetype;
-
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const prompt = `${ELITE_ENGINE_PROMPT}
     TASK: Extract data from the attached document and transform it into the "Modern Chronological" persona.
     Return strictly valid JSON.`;
-
         const result = await model.generateContent([
-            { inlineData: { data: base64Data, mimeType: mimeType } },
+            { inlineData: { data: base64Data, mimeType } },
             { text: prompt }
         ]);
-
         const responseText = result.response.text();
         const json = JSON.parse(responseText.replace(/```json|```/g, '').trim());
         res.json(json);
@@ -105,15 +122,12 @@ app.post('/api/optimize', async (req, res) => {
     try {
         const { data, modelStyle, lang } = req.body;
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         const prompt = `${ELITE_ENGINE_PROMPT}
     TASK: Perform a Global Style Transformation for the archetype: "${modelStyle}".
     Completely rewrite the Summary, Experience, and Skills to reflect this persona's specific tone and priorities.
     Input Language: ${getLangName(lang)}.
     DATA: ${JSON.stringify(data)}
-    
     Return the updated JSON object.`;
-
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
         const json = JSON.parse(responseText.replace(/```json|```/g, '').trim());
@@ -128,13 +142,11 @@ app.post('/api/refine', async (req, res) => {
     try {
         const { role, context, lang } = req.body;
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         const prompt = `${ELITE_ENGINE_PROMPT}
     TASK: Transform these notes for a "${role}" into accomplishments using the Google XYZ formula.
     LANGUAGE: ${getLangName(lang)}.
     INPUT: "${context}"
     Return as a JSON array of strings.`;
-
         const result = await model.generateContent({
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
             generationConfig: {
@@ -142,7 +154,6 @@ app.post('/api/refine', async (req, res) => {
                 responseSchema: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } }
             }
         });
-
         const responseText = result.response.text();
         const json = JSON.parse(responseText.replace(/```json|```/g, '').trim());
         res.json(json);
@@ -156,14 +167,12 @@ app.post('/api/chat', async (req, res) => {
     try {
         const { cvData, userInstruction, currentContent, lang } = req.body;
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         const prompt = `${ELITE_ENGINE_PROMPT}
     TASK: Write a persuasive cover letter.
     CONTEXT: ${JSON.stringify(cvData)}
     USER REQUEST: "${userInstruction}"
     LANGUAGE: ${getLangName(lang)}.
     Output ONLY the letter text in Markdown.`;
-
         const result = await model.generateContent(prompt);
         res.json({ content: result.response.text() });
     } catch (error) {
@@ -176,12 +185,10 @@ app.post('/api/summary', async (req, res) => {
     try {
         const { jobTitle, skills, lang } = req.body;
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
         const prompt = `${ELITE_ENGINE_PROMPT}
     TASK: Generate a high-impact 3-line professional summary.
     ROLE: ${jobTitle}. SKILLS: ${skills.join(', ')}.
     LANGUAGE: ${getLangName(lang)}.`;
-
         const result = await model.generateContent(prompt);
         res.json({ summary: result.response.text() });
     } catch (error) {
@@ -190,58 +197,42 @@ app.post('/api/summary', async (req, res) => {
     }
 });
 
-// ========== SERVE FRONTEND IN PRODUCTION ==========
-// Try multiple possible locations for the dist folder
-const possibleDistPaths = [
+// ========== SERVE FRONTEND ==========
+const candidates = [
+  path.join(cwd, 'dist'),
   path.join(__dirname, '..', 'dist'),
-  path.join(process.cwd(), 'dist'),
   path.join(__dirname, 'dist'),
 ];
 
-let distPath = possibleDistPaths.find(p => fs.existsSync(p));
+const distPath = candidates.find(p => fs.existsSync(path.join(p, 'index.html'))) || candidates.find(p => fs.existsSync(p));
 
-if (distPath) {
+console.log('CWD:', cwd);
+console.log('__dirname:', __dirname);
+console.log('Dist candidates:', candidates.map(p => `${p} exists=${fs.existsSync(p)}`));
+
+if (distPath && fs.existsSync(path.join(distPath, 'index.html'))) {
   console.log('Serving frontend from:', distPath);
-  console.log('Files in dist:', fs.readdirSync(distPath));
   app.use(express.static(distPath));
-
-  // SPA fallback
   app.get('*', (req, res) => {
-    const indexPath = path.join(distPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
-    } else {
-      res.status(404).send('index.html not found in dist');
-    }
+    res.sendFile(path.join(distPath, 'index.html'));
   });
 } else {
-  console.error('dist folder not found. Tried:', possibleDistPaths);
+  console.error('No valid dist/index.html found');
   app.get('*', (req, res) => {
-    res.status(404).send('Frontend not built. dist folder missing.');
+    res.status(404).send(`
+      <h1>EliteCV Pro - Frontend not found</h1>
+      <p>cwd: ${cwd}</p>
+      <p>__dirname: ${__dirname}</p>
+      <pre>${JSON.stringify(candidates.map(p => ({ path: p, exists: fs.existsSync(p), files: fs.existsSync(p) ? fs.readdirSync(p) : [] })), null, 2)}</pre>
+      <p><a href="/api/health">/api/health</a></p>
+    `);
   });
 }
 
-// Start server
 const server = app.listen(port, () => {
-    console.log(`EliteCV Pro running on port ${port}`);
-}).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${port} is already in use.`);
-        process.exit(1);
-    } else {
-        console.error('Server error:', err);
-        process.exit(1);
-    }
+  console.log(`EliteCV Pro running on port ${port}`);
 });
 
-process.on('SIGTERM', () => {
-    server.close(() => process.exit(0));
-});
-
-process.on('SIGINT', () => {
-    server.close(() => process.exit(0));
-});
-
-process.on('unhandledRejection', (reason) => {
-    console.error('Unhandled Rejection:', reason);
-});
+process.on('SIGTERM', () => server.close(() => process.exit(0)));
+process.on('SIGINT', () => server.close(() => process.exit(0)));
+process.on('unhandledRejection', (reason) => console.error('Unhandled Rejection:', reason));
