@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 
@@ -74,7 +75,6 @@ const getLangName = (lang) => {
 
 // ========== API ROUTES ==========
 
-// Route: Parse CV (accepts file upload)
 app.post('/api/parse', upload.single('file'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -101,7 +101,6 @@ app.post('/api/parse', upload.single('file'), async (req, res) => {
     }
 });
 
-// Route: Optimize CV
 app.post('/api/optimize', async (req, res) => {
     try {
         const { data, modelStyle, lang } = req.body;
@@ -121,11 +120,10 @@ app.post('/api/optimize', async (req, res) => {
         res.json(json);
     } catch (error) {
         console.error("Optimize Error:", error);
-        res.json(req.body.data); // Fallback: return original data
+        res.json(req.body.data);
     }
 });
 
-// Route: Refine Bullets
 app.post('/api/refine', async (req, res) => {
     try {
         const { role, context, lang } = req.body;
@@ -154,7 +152,6 @@ app.post('/api/refine', async (req, res) => {
     }
 });
 
-// Route: Chat
 app.post('/api/chat', async (req, res) => {
     try {
         const { cvData, userInstruction, currentContent, lang } = req.body;
@@ -175,7 +172,6 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// Route: Summary
 app.post('/api/summary', async (req, res) => {
     try {
         const { jobTitle, skills, lang } = req.body;
@@ -195,24 +191,42 @@ app.post('/api/summary', async (req, res) => {
 });
 
 // ========== SERVE FRONTEND IN PRODUCTION ==========
-const distPath = path.join(__dirname, '..', 'dist');
-app.use(express.static(distPath));
+// Try multiple possible locations for the dist folder
+const possibleDistPaths = [
+  path.join(__dirname, '..', 'dist'),
+  path.join(process.cwd(), 'dist'),
+  path.join(__dirname, 'dist'),
+];
 
-// SPA fallback - send index.html for any non-API route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'), (err) => {
-    if (err) {
-      res.status(404).send('Frontend not built. Run "npm run build" first.');
+let distPath = possibleDistPaths.find(p => fs.existsSync(p));
+
+if (distPath) {
+  console.log('Serving frontend from:', distPath);
+  console.log('Files in dist:', fs.readdirSync(distPath));
+  app.use(express.static(distPath));
+
+  // SPA fallback
+  app.get('*', (req, res) => {
+    const indexPath = path.join(distPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send('index.html not found in dist');
     }
   });
-});
+} else {
+  console.error('dist folder not found. Tried:', possibleDistPaths);
+  app.get('*', (req, res) => {
+    res.status(404).send('Frontend not built. dist folder missing.');
+  });
+}
 
-// Start server with proper error handling
+// Start server
 const server = app.listen(port, () => {
-    console.log(`EliteCV Pro running at http://localhost:${port}`);
+    console.log(`EliteCV Pro running on port ${port}`);
 }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${port} is already in use. Please free up the port or change the server port.`);
+        console.error(`Port ${port} is already in use.`);
         process.exit(1);
     } else {
         console.error('Server error:', err);
@@ -220,23 +234,14 @@ const server = app.listen(port, () => {
     }
 });
 
-// Handle graceful shutdown
 process.on('SIGTERM', () => {
-    console.log('SIGTERM signal received: closing HTTP server');
-    server.close(() => {
-        console.log('HTTP server closed');
-    });
+    server.close(() => process.exit(0));
 });
 
 process.on('SIGINT', () => {
-    console.log('\nSIGINT signal received: closing HTTP server');
-    server.close(() => {
-        console.log('HTTP server closed');
-        process.exit(0);
-    });
+    server.close(() => process.exit(0));
 });
 
-// Prevent unhandled promise rejections from crashing the server
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection:', reason);
 });
