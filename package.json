@@ -1,12 +1,15 @@
 {
-  "name": "elitecv---ai-resume-builder",
+  "name": "elitecv-pro",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "AI-Powered Professional Resume Builder with 28 templates, multi-language support and Gemini AI",
   "scripts": {
-    "dev": "concurrently \"vite\" \"node server/server.js\"",
+    "dev": "concurrently -n frontend,backend -c cyan,magenta \"vite\" \"node server/server.js\"",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/server.js",
+    "server": "node server/server.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
