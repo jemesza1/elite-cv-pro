@@ -3,6 +3,7 @@ services:
     name: elitecv-pro
     runtime: node
     plan: free
+    region: oregon
     buildCommand: npm install && npm run build
     startCommand: node server/server.js
     envVars:
