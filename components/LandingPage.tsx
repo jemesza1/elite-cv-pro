@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 
 interface LandingPageProps {
@@ -10,127 +9,140 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onStart, lang, onLangChange }) => {
   const isRtl = lang === 'ar';
+  const [scrolled, setScrolled] = useState(false);
 
-  const translations = {
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const t = {
     start: { en: 'Start Building', fr: 'Commencer', ar: 'ابدأ الآن' },
-    heroTitle1: { en: 'Your Career,', fr: 'Votre Carrière,', ar: 'مسيرتك المهنية،' },
-    heroTitle2: { en: 'Elevated', fr: 'Élevée', ar: 'مرتقية' },
+    heroTitle1: { en: 'Craft a Resume', fr: 'Créez un CV', ar: 'أنشئ سيرة ذاتية' },
+    heroTitle2: { en: 'That Opens Doors', fr: 'Qui Ouvre des Portes', ar: 'تفتح الأبواب' },
     heroDesc: {
-      en: 'Create a professional, job-winning resume in minutes. EliteCV uses advanced AI to optimize your content and beat ATS algorithms.',
-      fr: 'Créez un CV professionnel en quelques minutes. EliteCV utilise une IA avancée pour optimiser votre contenu.',
-      ar: 'أنشئ سيرة ذاتية احترافية في دقائق. يستخدم EliteCV ذكاءً اصطناعيًا متطورًا لتحسين المحتوى الخاص بك.'
+      en: '28 elite templates. Gemini AI writing. ATS-optimized. Built for professionals who refuse to blend in.',
+      fr: '28 modèles d\'élite. Rédaction IA Gemini. Optimisé ATS. Pour les professionnels qui refusent de se fondre dans la masse.',
+      ar: '28 قالبًا فاخرًا. كتابة بالذكاء الاصطناعي. محسّن لأنظمة التوظيف. للمحترفين الذين يرفضون التشابه.'
     },
-    buildNow: { en: 'Build My CV Now', fr: 'Créer mon CV', ar: 'أنشئ سيرتي الذاتية الآن' },
-    featuresTitle: { en: 'Everything you need to land the job.', fr: 'Tout ce dont vous avez besoin.', ar: 'كل ما تحتاجه للحصول على الوظيفة.' },
-    feature1Title: { en: 'AI Content Assistant', fr: 'Assistant de contenu IA', ar: 'مساعد المحتوى الذكي' },
-    feature2Title: { en: 'ATS Optimization', fr: 'Optimisation ATS', ar: 'تحسين نظام تتبع المتقدمين' },
-    feature3Title: { en: 'Cover Letter', fr: 'Lettre de motivation', ar: 'خطاب التغطية' },
-
-    // Templates section
-    templatesTitle: { en: 'Professional Templates', fr: 'Modèles Professionnels', ar: 'قوالب احترافية' },
-    templatesSubtitle: { en: 'Choose from 28+ stunning designs tested by recruiters', fr: 'Choisissez parmi plus de 28 designs testés par des recruteurs', ar: 'اختر من بين أكثر من 28 تصميمًا احترافيًا' },
-    viewAll: { en: 'View All Templates', fr: 'Voir tous les modèles', ar: 'عرض جميع القوالب' },
-
-    // How it works
-    howItWorksTitle: { en: 'Create Your CV in 3 Simple Steps', fr: 'Créez Votre CV en 3 Étapes', ar: 'أنشئ سيرتك الذاتية في 3 خطوات' },
-    step1Title: { en: 'Choose Template', fr: 'Choisissez un Modèle', ar: 'اختر القالب' },
-    step1Desc: { en: 'Select from 28+ professional templates', fr: 'Sélectionnez parmi plus de 28 modèles professionnels', ar: 'اختر من أكثر من 28 قالبًا احترافيًا' },
-    step2Title: { en: 'Fill Your Info', fr: 'Remplissez vos Infos', ar: 'أدخل بياناتك' },
-    step2Desc: { en: 'AI helps you write compelling content', fr: 'L\'IA vous aide à rédiger un contenu convaincant', ar: 'الذكاء الاصطناعي يساعدك' },
-    step3Title: { en: 'Download & Apply', fr: 'Téléchargez et Postulez', ar: 'حمّل وتقدّم' },
-    step3Desc: { en: 'Get your ATS-optimized PDF instantly', fr: 'Obtenez votre PDF optimisé instantanément', ar: 'احصل على PDF محسّن فورًا' },
-
-    // Stats
-    statsUsers: { en: 'Active Users', fr: 'Utilisateurs Actifs', ar: 'مستخدم نشط' },
-    statsTemplates: { en: 'Models', fr: 'Modèles', ar: 'قالب' },
-    statsCountries: { en: 'Countries', fr: 'Pays', ar: 'دولة' },
-    statsSuccess: { en: 'Success Rate', fr: 'Taux de Réussite', ar: 'معدل النجاح' },
-
-    // FAQ
-    faqTitle: { en: 'Frequently Asked Questions', fr: 'Questions Fréquentes', ar: 'الأسئلة الشائعة' },
-    faq1Q: { en: 'Is EliteCV really free?', fr: 'EliteCV est-il vraiment gratuit ?', ar: 'هل EliteCV مجاني حقًا؟' },
-    faq1A: { en: 'Yes! Create unlimited CVs with all templates for free.', fr: 'Oui ! Créez des CV illimités gratuitement.', ar: 'نعم! أنشئ سيرًا ذاتية غير محدودة مجانًا.' },
-    faq2Q: { en: 'Are templates ATS-friendly?', fr: 'Les modèles sont-ils compatibles ATS ?', ar: 'هل القوالب متوافقة مع ATS؟' },
-    faq2A: { en: 'Absolutely! All templates are tested against major ATS systems.', fr: 'Absolument ! Tous testés contre les systèmes ATS.', ar: 'بالتأكيد! جميع القوالب متوافقة مع أنظمة ATS.' },
-    faq3Q: { en: 'Can I edit my CV later?', fr: 'Puis-je modifier mon CV plus tard ?', ar: 'هل يمكنني تعديل سيرتي لاحقًا؟' },
-    faq3A: { en: 'Yes! Your CV is saved and you can edit anytime.', fr: 'Oui ! Votre CV est sauvegardé.', ar: 'نعم! سيرتك الذاتية محفوظة.' },
-    faq4Q: { en: 'What file formats can I download?', fr: 'Quels formats puis-je télécharger ?', ar: 'ما هي صيغ الملفات المتاحة؟' },
-    faq4A: { en: 'Download as PDF optimized for printing and ATS.', fr: 'Téléchargez en PDF optimisé.', ar: 'حمّل بصيغة PDF محسّنة.' },
-
-    // Final CTA
-    finalCtaTitle: { en: 'Ready to Land Your Dream Job?', fr: 'Prêt à Décrocher Votre Emploi de Rêve ?', ar: 'مستعد للحصول على وظيفة أحلامك؟' },
-    finalCtaDesc: { en: 'Join thousands of professionals who landed their dream jobs with EliteCV', fr: 'Rejoignez des milliers de professionnels', ar: 'انضم إلى آلاف المحترفين' },
-    getStartedFree: { en: 'Get Started - It\'s Free', fr: 'Commencer Gratuitement', ar: 'ابدأ مجانًا' }
+    buildNow: { en: 'Build My CV Free', fr: 'Créer mon CV gratuitement', ar: 'أنشئ سيرتي مجانًا' },
+    haveCV: { en: 'I already have a CV', fr: "J'ai déjà un CV", ar: 'لدي سيرة ذاتية' },
+    featuresTitle: { en: 'Why professionals choose EliteCV', fr: 'Pourquoi les pros choisissent EliteCV', ar: 'لماذا يختار المحترفون EliteCV' },
+    f1: { en: 'AI Content Engine', fr: 'Moteur de contenu IA', ar: 'محرك محتوى ذكي' },
+    f1d: { en: 'Gemini rewrites every line with impact metrics and recruiter-ready language.', fr: 'Gemini réécrit chaque ligne avec impact et langage recruteur.', ar: 'يعيد Gemini صياغة كل سطر بلغة احترافية ومؤشرات أثر.' },
+    f2: { en: '28 Distinct Templates', fr: '28 modèles distincts', ar: '28 قالبًا مميزًا' },
+    f2d: { en: 'From ATS-safe corporate to bold creative — every design is original and print-perfect.', fr: 'Du corporate ATS au créatif audacieux — chaque design est original.', ar: 'من القوالب المؤسسية الآمنة إلى الإبداعية الجريئة.' },
+    f3: { en: 'Instant Cover Letters', fr: 'Lettres de motivation', ar: 'خطابات تغطية فورية' },
+    f3d: { en: 'Generate tailored letters for each application in seconds, in EN / FR / AR.', fr: 'Générez des lettres adaptées en secondes, EN / FR / AR.', ar: 'أنشئ خطابات مخصصة لكل طلب خلال ثوانٍ.' },
+    templatesTitle: { en: 'Templates that get interviews', fr: 'Des modèles qui décrochent des entretiens', ar: 'قوالب تجلب المقابلات' },
+    templatesSub: { en: 'Hand-crafted for real hiring systems — not generic themes.', fr: 'Conçus pour les vrais systèmes de recrutement.', ar: 'مصممة لأنظمة التوظيف الحقيقية.' },
+    viewAll: { en: 'Explore all templates', fr: 'Explorer tous les modèles', ar: 'استكشف كل القوالب' },
+    howTitle: { en: 'Three steps. Zero friction.', fr: 'Trois étapes. Zéro friction.', ar: 'ثلاث خطوات. بدون تعقيد.' },
+    s1: { en: 'Pick a style', fr: 'Choisissez un style', ar: 'اختر أسلوبًا' },
+    s1d: { en: '28 templates across Professional, Creative, Luxury & Minimal.', fr: '28 modèles : Pro, Créatif, Luxe & Minimal.', ar: '28 قالبًا: احترافي، إبداعي، فاخر وبسيط.' },
+    s2: { en: 'Let AI write', fr: 'Laissez l\'IA écrire', ar: 'دع الذكاء يكتب' },
+    s2d: { en: 'Paste notes or upload a CV — Gemini turns them into powerful bullets.', fr: 'Collez des notes ou importez un CV — Gemini les transforme.', ar: 'الصق ملاحظاتك أو ارفع سيرتك — Gemini يحوّلها لنقاط قوية.' },
+    s3: { en: 'Export & apply', fr: 'Exportez & postulez', ar: 'صدّر وتقدّم' },
+    s3d: { en: 'Print-ready PDF with perfect page breaks and ATS-safe structure.', fr: 'PDF prêt à imprimer, structure ATS-safe.', ar: 'PDF جاهز للطباعة بهيكل متوافق مع أنظمة التوظيف.' },
+    statsUsers: { en: 'Professionals', fr: 'Professionnels', ar: 'محترف' },
+    statsTemplates: { en: 'Templates', fr: 'Modèles', ar: 'قالب' },
+    statsLangs: { en: 'Languages', fr: 'Langues', ar: 'لغات' },
+    statsAts: { en: 'ATS Ready', fr: 'Compatible ATS', ar: 'متوافق ATS' },
+    faqTitle: { en: 'Questions, answered', fr: 'Questions fréquentes', ar: 'أسئلة شائعة' },
+    faq1Q: { en: 'Is EliteCV free?', fr: 'EliteCV est-il gratuit ?', ar: 'هل EliteCV مجاني؟' },
+    faq1A: { en: 'Yes. Create unlimited CVs with every template at no cost.', fr: 'Oui. Créez des CV illimités gratuitement.', ar: 'نعم. أنشئ سيرًا غير محدودة بكل القوالب مجانًا.' },
+    faq2Q: { en: 'Will my CV pass ATS?', fr: 'Mon CV passera-t-il les ATS ?', ar: 'هل ستمر سيرتي عبر أنظمة ATS؟' },
+    faq2A: { en: 'Yes. Templates like Atlas are built specifically for applicant tracking systems.', fr: 'Oui. Des modèles comme Atlas sont conçus pour les ATS.', ar: 'نعم. قوالب مثل Atlas مصممة خصيصًا لأنظمة التتبع.' },
+    faq3Q: { en: 'Can I use Arabic or French?', fr: 'Puis-je utiliser l\'arabe ou le français ?', ar: 'هل يمكنني استخدام العربية أو الفرنسية؟' },
+    faq3A: { en: 'Full interface and content support for English, French and Arabic (RTL).', fr: 'Interface et contenu complets en anglais, français et arabe (RTL).', ar: 'دعم كامل للواجهة والمحتوى بالإنجليزية والفرنسية والعربية.' },
+    faq4Q: { en: 'What format do I download?', fr: 'Quel format de téléchargement ?', ar: 'بأي صيغة أحمل؟' },
+    faq4A: { en: 'High-quality PDF optimized for both screen and print.', fr: 'PDF haute qualité optimisé écran et impression.', ar: 'PDF عالي الجودة محسّن للشاشة والطباعة.' },
+    ctaTitle: { en: 'Your next role starts with a better CV.', fr: 'Votre prochain poste commence par un meilleur CV.', ar: 'وظيفتك القادمة تبدأ بسيرة أفضل.' },
+    ctaDesc: { en: 'Join professionals who stopped sending average resumes.', fr: 'Rejoignez ceux qui ont arrêté d\'envoyer des CV moyens.', ar: 'انضم لمن توقفوا عن إرسال سير متوسطة.' },
+    ctaBtn: { en: 'Start free — no card needed', fr: 'Commencer gratuitement', ar: 'ابدأ مجانًا — بدون بطاقة' },
+    free: { en: 'Free forever', fr: 'Gratuit à vie', ar: 'مجاني للأبد' },
+    noCard: { en: 'No credit card', fr: 'Sans carte', ar: 'بدون بطاقة' },
+    trusted: { en: 'Trusted by candidates targeting', fr: 'Utilisé par des candidats visant', ar: 'موثوق من مرشحين يستهدفون' }
   };
 
+  const templateShowcase = [
+    { name: 'Elite', tag: 'Premium', color: 'from-amber-600 to-yellow-500' },
+    { name: 'Parisian', tag: 'Luxury', color: 'from-rose-500 to-pink-400' },
+    { name: 'Silicon Valley', tag: 'Tech', color: 'from-cyan-500 to-blue-600' },
+    { name: 'Atlas', tag: 'ATS', color: 'from-slate-700 to-slate-900' },
+    { name: 'Zenith', tag: 'Modern', color: 'from-violet-500 to-purple-600' },
+    { name: 'Minimal', tag: 'Clean', color: 'from-neutral-400 to-neutral-600' },
+    { name: 'Quantum', tag: 'Classic', color: 'from-stone-600 to-stone-800' },
+    { name: 'Spectrum', tag: 'Creative', color: 'from-fuchsia-500 to-orange-400' },
+  ];
+
   return (
-    <div className="bg-[var(--cv-bg)] text-[var(--cv-text-main)] overflow-x-hidden min-h-screen" dir={isRtl ? 'rtl' : 'ltr'}>
-      {/* Navigation */}
-      <nav className="fixed w-full z-50 glass-panel border-b border-[var(--cv-border)]/50">
-        <div className="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+    <div className="bg-[#0a0a0f] text-white overflow-x-hidden min-h-screen" dir={isRtl ? 'rtl' : 'ltr'}>
+      {/* Nav */}
+      <nav className={`fixed w-full z-50 transition-all duration-500 ${
+        scrolled ? 'bg-[#0a0a0f]/90 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent py-5'
+      }`}>
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-royal-900 to-royal-800 rounded-xl flex items-center justify-center text-white text-2xl font-black font-serif shadow-lg ring-1 ring-white/20">E</div>
-            <span className="text-2xl font-black tracking-tight text-[var(--cv-text-header)] font-serif">EliteCV</span>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-orange-500 to-rose-600 flex items-center justify-center text-white text-lg font-black shadow-lg shadow-orange-500/20">
+              E
+            </div>
+            <span className="text-xl font-bold tracking-tight">EliteCV</span>
           </div>
 
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4">
             <select
               value={lang}
               onChange={(e) => onLangChange(e.target.value as Language)}
-              className="bg-transparent border-none text-sm font-bold text-[var(--cv-text-muted)] focus:ring-0 cursor-pointer hover:text-[var(--cv-accent)] transition-colors uppercase tracking-widest"
+              className="bg-white/5 border border-white/10 rounded-full px-4 py-2 text-xs font-semibold text-white/70 focus:outline-none focus:border-white/30 cursor-pointer appearance-none"
             >
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-              <option value="ar">العربية</option>
+              <option value="en" className="bg-[#0a0a0f]">EN</option>
+              <option value="fr" className="bg-[#0a0a0f]">FR</option>
+              <option value="ar" className="bg-[#0a0a0f]">AR</option>
             </select>
             <button
               onClick={onStart}
-              className="px-8 py-3 bg-[var(--cv-text-header)] text-[var(--cv-bg)] rounded-full text-xs font-black uppercase tracking-[0.2em] hover:bg-[var(--cv-accent)] hover:scale-105 transition-all duration-300 shadow-xl"
+              className="px-6 py-2.5 bg-white text-black rounded-full text-xs font-bold uppercase tracking-wider hover:bg-amber-400 transition-all duration-300"
             >
-              {translations.start[lang]}
+              {t.start[lang]}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-60 pb-32 px-6 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[1400px] h-[1000px] opacity-40 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--cv-accent)_0%,_transparent_60%)] blur-[150px] opacity-20"></div>
-        </div>
+      {/* Hero */}
+      <section className="relative pt-36 pb-28 px-6 overflow-hidden">
+        {/* Glow orbs */}
+        <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-orange-500/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-40 right-1/4 w-[400px] h-[400px] bg-violet-600/15 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto text-center space-y-16">
-          <div className="inline-flex items-center gap-4 px-8 py-3 glass-panel rounded-full text-[var(--cv-accent)] text-[10px] font-black uppercase tracking-[0.25em] shadow-lg animate-fade-in border border-[var(--cv-accent)]/20">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--cv-accent)] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--cv-accent)]"></span>
-            </span>
-            <i className="fa fa-sparkles"></i>
-            <span>Powered by Gemini 1.5 Ultra</span>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-400 mb-10">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            Gemini AI · 28 Templates · EN/FR/AR
           </div>
 
-          <h1 className="text-7xl md:text-9xl font-black text-[var(--cv-text-header)] tracking-tighter leading-[0.9] font-serif animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            {translations.heroTitle1[lang]}<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--cv-accent)] to-royal-800 italic pr-4">
-              {translations.heroTitle2[lang]}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6">
+            {t.heroTitle1[lang]}
+            <br />
+            <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-500 bg-clip-text text-transparent">
+              {t.heroTitle2[lang]}
             </span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-[var(--cv-text-muted)] max-w-2xl mx-auto leading-relaxed font-medium animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            {translations.heroDesc[lang]}
+          <p className="text-lg md:text-xl text-white/50 max-w-2xl mx-auto leading-relaxed mb-12">
+            {t.heroDesc[lang]}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={onStart}
-              className="group relative w-full sm:w-auto px-16 py-7 bg-[var(--cv-text-header)] text-[var(--cv-bg)] rounded-full text-sm font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all duration-500 shadow-2xl flex items-center justify-center gap-4 overflow-hidden"
+              className="group w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-black rounded-full text-sm font-bold uppercase tracking-wider hover:shadow-2xl hover:shadow-orange-500/30 hover:scale-[1.03] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[var(--cv-accent)] to-royal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <span className="relative z-10">{translations.buildNow[lang]}</span>
-              <i className={`fa ${isRtl ? 'fa-arrow-left' : 'fa-arrow-right'} text-sm relative z-10 group-hover:translate-x-2 transition-transform`}></i>
+              {t.buildNow[lang]}
+              <i className={`fa ${isRtl ? 'fa-arrow-left' : 'fa-arrow-right'} text-xs group-hover:translate-x-1 transition-transform`} />
             </button>
-
 
             <button
               onClick={() => {
@@ -139,99 +151,88 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, lang, onLangChange }
                 input.accept = '.pdf,.doc,.docx';
                 input.onchange = (e) => {
                   const file = (e.target as HTMLInputElement).files?.[0];
-                  if (file) (window as any).handleCVUpload(file);
+                  if (file) (window as any).handleCVUpload?.(file);
                 };
                 input.click();
               }}
-              className="group relative w-full sm:w-auto px-12 py-7 bg-transparent border-2 border-[var(--cv-text-header)] text-[var(--cv-text-header)] rounded-full text-sm font-black uppercase tracking-[0.2em] shadow-lg flex items-center justify-center gap-4 overflow-hidden hover:bg-[var(--cv-text-header)] hover:text-white transition-all duration-500"
+              className="w-full sm:w-auto px-10 py-4 border border-white/15 text-white/80 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-white/5 hover:border-white/30 transition-all duration-300 flex items-center justify-center gap-3"
             >
-              <i className="fa fa-upload text-sm relative z-10 transition-transform group-hover:-translate-y-1"></i>
-              <span className="relative z-10">
-                {lang === 'fr' ? "J'ai déjà un CV" : lang === 'ar' ? 'لدي سيرة ذاتية' : 'I have a CV'}
-              </span>
+              <i className="fa fa-upload text-xs" />
+              {t.haveCV[lang]}
             </button>
           </div>
         </div>
       </section>
 
-      {/* Trusted By Section - Elite Social Proof */}
-      <section className="py-12 px-6 border-y border-[var(--cv-border)] bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto flex flex-col items-center gap-10">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] text-center">Utilisé par des candidats chez</p>
-          <div className="flex flex-wrap justify-center items-center gap-10 md:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
-            <div className="flex items-center gap-2 font-serif font-bold text-2xl text-slate-900"><i className="fab fa-google"></i> Google</div>
-            <div className="flex items-center gap-2 font-serif font-bold text-2xl text-slate-900"><i className="fab fa-amazon"></i> Amazon</div>
-            <div className="flex items-center gap-2 font-serif font-bold text-2xl text-slate-900"><i className="fab fa-meta"></i> Meta</div>
-            <div className="flex items-center gap-2 font-serif font-bold text-2xl text-slate-900"><i className="fab fa-apple"></i> Apple</div>
-            <div className="flex items-center gap-2 font-serif font-bold text-2xl text-slate-900"><i className="fab fa-microsoft"></i> Microsoft</div>
+      {/* Trusted */}
+      <section className="py-10 border-y border-white/5">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/30 mb-6">{t.trusted[lang]}</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14 text-white/25 text-lg font-semibold">
+            {['Google', 'Amazon', 'Meta', 'Apple', 'Microsoft', 'McKinsey'].map((c) => (
+              <span key={c} className="hover:text-white/50 transition-colors">{c}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-40 px-6 bg-[var(--cv-sidebar)] relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24 space-y-6">
-            <h2 className="text-5xl font-black text-[var(--cv-text-header)] tracking-tight font-serif">{translations.featuresTitle[lang]}</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+      {/* Features */}
+      <section className="py-28 px-6">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-16 tracking-tight">{t.featuresTitle[lang]}</h2>
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: 'fa-wand-magic-sparkles', title: translations.feature1Title[lang], desc: 'Gemini 3 AI optimizes every sentence for maximum professional impact.', color: 'text-blue-500', action: 'ai-assistant' },
-              { icon: 'fa-layer-group', title: translations.feature2Title[lang], desc: 'Layouts tested against the latest recruitment software filters.', color: 'text-purple-500', action: 'ats-optimization' },
-              { icon: 'fa-file-pen', title: translations.feature3Title[lang], desc: 'Instant tailored letters for every specific application.', color: 'text-emerald-500', action: 'cover-letter' }
-            ].map((feature, i) => (
+              { icon: 'fa-wand-magic-sparkles', title: t.f1[lang], desc: t.f1d[lang], gradient: 'from-blue-500 to-cyan-400' },
+              { icon: 'fa-layer-group', title: t.f2[lang], desc: t.f2d[lang], gradient: 'from-violet-500 to-purple-400' },
+              { icon: 'fa-file-pen', title: t.f3[lang], desc: t.f3d[lang], gradient: 'from-emerald-500 to-teal-400' },
+            ].map((f, i) => (
               <div
                 key={i}
                 onClick={onStart}
-                className="group p-12 bg-[var(--cv-bg)] rounded-[2.5rem] border border-[var(--cv-border)] hover:border-[var(--cv-accent)]/30 hover:shadow-2xl transition-all duration-500 relative overflow-hidden cursor-pointer hover:scale-105 active:scale-95"
+                className="group p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/15 hover:bg-white/[0.06] transition-all duration-400 cursor-pointer"
               >
-                <div className={`w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl mb-10 shadow-sm group-hover:scale-110 transition duration-500 ${feature.color}`}>
-                  <i className={`fa ${feature.icon}`}></i>
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.gradient} flex items-center justify-center text-white text-lg mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <i className={`fa ${f.icon}`} />
                 </div>
-                <h3 className="text-2xl font-black mb-6 text-[var(--cv-text-header)] font-serif">{feature.title}</h3>
-                <p className="text-[var(--cv-text-muted)] leading-relaxed text-lg">{feature.desc}</p>
-
-                {/* Interactive indicator */}
-                <div className="mt-8 flex items-center gap-3 text-[var(--cv-accent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-sm font-bold uppercase tracking-wider">
-                    {lang === 'fr' ? 'Commencer' : lang === 'ar' ? 'ابدأ' : 'Get Started'}
-                  </span>
-                  <i className={`fa ${isRtl ? 'fa-arrow-left' : 'fa-arrow-right'} text-sm group-hover:translate-x-1 transition-transform`}></i>
-                </div>
-
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--cv-accent)]/5 to-transparent rounded-bl-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <h3 className="text-xl font-bold mb-3">{f.title}</h3>
+                <p className="text-white/45 leading-relaxed text-sm">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Templates Showcase Section */}
-      <section className="py-32 px-6 bg-[var(--cv-bg)]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20 space-y-4">
-            <h2 className="text-5xl font-black text-[var(--cv-text-header)] tracking-tight font-serif">{translations.templatesTitle[lang]}</h2>
-            <p className="text-xl text-[var(--cv-text-muted)] max-w-2xl mx-auto">{translations.templatesSubtitle[lang]}</p>
+      {/* Templates showcase */}
+      <section className="py-28 px-6 bg-gradient-to-b from-transparent to-white/[0.02]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-3">{t.templatesTitle[lang]}</h2>
+            <p className="text-white/40">{t.templatesSub[lang]}</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-            {['Elite', 'Parisian', 'Silicon Valley', 'Minimal', 'Zurich', 'Executive', 'Atlas', 'Prism', 'Nexus', 'Zenith', 'Quantum', 'Spectrum'].map((template, i) => (
-              <div key={i} className="group relative aspect-[8.5/11] bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden cursor-pointer border border-[var(--cv-border)] hover:border-[var(--cv-accent)]/30 hover:scale-105">
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white p-6 flex flex-col">
-                  <div className="h-2 w-16 bg-[var(--cv-text-header)] rounded mb-4"></div>
-                  <div className="h-1.5 w-full bg-slate-200 rounded mb-2"></div>
-                  <div className="h-1.5 w-3/4 bg-slate-200 rounded mb-6"></div>
-                  <div className="space-y-3 flex-1">
-                    <div className="h-1 w-full bg-slate-100 rounded"></div>
-                    <div className="h-1 w-full bg-slate-100 rounded"></div>
-                    <div className="h-1 w-2/3 bg-slate-100 rounded"></div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-12">
+            {templateShowcase.map((tpl, i) => (
+              <div
+                key={i}
+                onClick={onStart}
+                className="group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer border border-white/5 hover:border-white/20 transition-all duration-400 hover:scale-[1.03]"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${tpl.color} opacity-20 group-hover:opacity-30 transition-opacity`} />
+                <div className="absolute inset-0 bg-[#12121a] p-5 flex flex-col">
+                  <div className={`h-1.5 w-12 rounded-full bg-gradient-to-r ${tpl.color} mb-4`} />
+                  <div className="space-y-2 flex-1">
+                    <div className="h-1 w-full bg-white/10 rounded" />
+                    <div className="h-1 w-4/5 bg-white/10 rounded" />
+                    <div className="h-1 w-3/5 bg-white/10 rounded" />
+                    <div className="h-1 w-full bg-white/5 rounded mt-4" />
+                    <div className="h-1 w-full bg-white/5 rounded" />
+                    <div className="h-1 w-2/3 bg-white/5 rounded" />
                   </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="text-xs font-black text-[var(--cv-text-header)] opacity-60 group-hover:opacity-100 transition-opacity">{template}</div>
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-xs font-bold text-white/70">{tpl.name}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/10 text-white/50">{tpl.tag}</span>
                   </div>
                 </div>
-                <div className="absolute inset-0 bg-[var(--cv-accent)]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </div>
             ))}
           </div>
@@ -239,150 +240,99 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, lang, onLangChange }
           <div className="text-center">
             <button
               onClick={onStart}
-              className="px-12 py-5 bg-transparent border-2 border-[var(--cv-text-header)] text-[var(--cv-text-header)] rounded-full text-sm font-black uppercase tracking-[0.2em] hover:bg-[var(--cv-text-header)] hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="px-8 py-3 border border-white/15 rounded-full text-sm font-bold text-white/70 hover:text-white hover:border-white/30 transition-all"
             >
-              {translations.viewAll[lang]}
+              {t.viewAll[lang]} →
             </button>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-40 px-6 bg-[var(--cv-sidebar)] relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-30">
-          <div className="absolute top-20 left-20 w-96 h-96 bg-[var(--cv-accent)]/10 rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-royal-500/10 rounded-full blur-[100px]"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-24 space-y-4">
-            <h2 className="text-5xl font-black text-[var(--cv-text-header)] tracking-tight font-serif">{translations.howItWorksTitle[lang]}</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+      {/* How it works */}
+      <section className="py-28 px-6">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-16 tracking-tight">{t.howTitle[lang]}</h2>
+          <div className="grid md:grid-cols-3 gap-10">
             {[
-              { icon: 'fa-palette', title: translations.step1Title[lang], desc: translations.step1Desc[lang], number: '01', color: 'from-blue-500 to-blue-600' },
-              { icon: 'fa-wand-magic-sparkles', title: translations.step2Title[lang], desc: translations.step2Desc[lang], number: '02', color: 'from-purple-500 to-purple-600' },
-              { icon: 'fa-cloud-arrow-down', title: translations.step3Title[lang], desc: translations.step3Desc[lang], number: '03', color: 'from-emerald-500 to-emerald-600' }
-            ].map((step, i) => (
-              <div key={i} className="group relative text-center">
-                {/* Connector Line */}
-                {i < 2 && (
-                  <div className="hidden md:block absolute top-20 left-1/2 w-full h-0.5 bg-gradient-to-r from-[var(--cv-accent)]/30 to-transparent z-0"></div>
-                )}
-
-                {/* Step Card */}
-                <div className="relative z-10">
-                  <div className={`mx-auto w-24 h-24 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center text-white text-4xl mb-8 shadow-2xl group-hover:scale-110 transition-transform duration-500 rotate-3 group-hover:rotate-0`}>
-                    <i className={`fa ${step.icon}`}></i>
-                  </div>
-
-                  <div className="absolute top-0 right-1/2 translate-x-20 -translate-y-2 text-8xl font-black text-[var(--cv-accent)]/5 z-0">{step.number}</div>
-
-                  <h3 className="text-2xl font-black mb-4 text-[var(--cv-text-header)] font-serif">{step.title}</h3>
-                  <p className="text-[var(--cv-text-muted)] text-lg leading-relaxed">{step.desc}</p>
-                </div>
+              { n: '01', title: t.s1[lang], desc: t.s1d[lang] },
+              { n: '02', title: t.s2[lang], desc: t.s2d[lang] },
+              { n: '03', title: t.s3[lang], desc: t.s3d[lang] },
+            ].map((s, i) => (
+              <div key={i} className="relative text-center md:text-left">
+                <div className="text-5xl font-black text-white/5 mb-4">{s.n}</div>
+                <h3 className="text-xl font-bold mb-2">{s.title}</h3>
+                <p className="text-white/40 text-sm leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Statistics Section */}
-      <section className="py-32 px-6 bg-[var(--cv-text-header)] text-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-            {[
-              { number: '50K+', label: translations.statsUsers[lang], icon: 'fa-users' },
-              { number: '28+', label: translations.statsTemplates[lang], icon: 'fa-file-alt' },
-              { number: '120+', label: translations.statsCountries[lang], icon: 'fa-globe' },
-              { number: '94%', label: translations.statsSuccess[lang], icon: 'fa-chart-line' }
-            ].map((stat, i) => (
-              <div key={i} className="group">
-                <div className="mb-4 text-5xl opacity-20 group-hover:opacity-40 transition-opacity">
-                  <i className={`fa ${stat.icon}`}></i>
-                </div>
-                <div className="text-5xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">{stat.number}</div>
-                <div className="text-sm font-bold uppercase tracking-wider opacity-80">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+      {/* Stats */}
+      <section className="py-20 px-6 border-y border-white/5">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {[
+            { n: '50K+', l: t.statsUsers[lang] },
+            { n: '28+', l: t.statsTemplates[lang] },
+            { n: '3', l: t.statsLangs[lang] },
+            { n: '100%', l: t.statsAts[lang] },
+          ].map((s, i) => (
+            <div key={i}>
+              <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-1">{s.n}</div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-white/40">{s.l}</div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-40 px-6 bg-[var(--cv-bg)]">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-20 space-y-4">
-            <h2 className="text-5xl font-black text-[var(--cv-text-header)] tracking-tight font-serif">{translations.faqTitle[lang]}</h2>
-          </div>
-
-          <div className="space-y-6">
+      {/* FAQ */}
+      <section className="py-28 px-6">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-12 tracking-tight">{t.faqTitle[lang]}</h2>
+          <div className="space-y-4">
             {[
-              { q: translations.faq1Q[lang], a: translations.faq1A[lang] },
-              { q: translations.faq2Q[lang], a: translations.faq2A[lang] },
-              { q: translations.faq3Q[lang], a: translations.faq3A[lang] },
-              { q: translations.faq4Q[lang], a: translations.faq4A[lang] }
+              { q: t.faq1Q[lang], a: t.faq1A[lang] },
+              { q: t.faq2Q[lang], a: t.faq2A[lang] },
+              { q: t.faq3Q[lang], a: t.faq3A[lang] },
+              { q: t.faq4Q[lang], a: t.faq4A[lang] },
             ].map((faq, i) => (
-              <div key={i} className="group p-8 bg-white rounded-2xl border border-[var(--cv-border)] hover:border-[var(--cv-accent)]/30 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-start gap-6">
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[var(--cv-accent)] to-royal-600 rounded-xl flex items-center justify-center text-white font-black text-lg">
-                    Q
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-black text-[var(--cv-text-header)] mb-3">{faq.q}</h3>
-                    <p className="text-[var(--cv-text-muted)] leading-relaxed">{faq.a}</p>
-                  </div>
-                </div>
+              <div key={i} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-colors">
+                <h3 className="font-bold mb-2 text-white/90">{faq.q}</h3>
+                <p className="text-sm text-white/45 leading-relaxed">{faq.a}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-40 px-6 bg-gradient-to-br from-[var(--cv-text-header)] via-royal-800 to-royal-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
-        </div>
-
-        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-12">
-          <h2 className="text-6xl md:text-7xl font-black tracking-tight font-serif leading-tight">{translations.finalCtaTitle[lang]}</h2>
-          <p className="text-2xl text-white/80 leading-relaxed">{translations.finalCtaDesc[lang]}</p>
-
+      {/* Final CTA */}
+      <section className="py-28 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-orange-600/10 via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4 leading-tight">{t.ctaTitle[lang]}</h2>
+          <p className="text-white/45 text-lg mb-10">{t.ctaDesc[lang]}</p>
           <button
             onClick={onStart}
-            className="group relative px-16 py-8 bg-white text-[var(--cv-text-header)] rounded-full text-lg font-black uppercase tracking-[0.2em] hover:scale-110 active:scale-95 transition-all duration-500 shadow-2xl flex items-center justify-center gap-4 mx-auto overflow-hidden"
+            className="group px-12 py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-black rounded-full text-sm font-bold uppercase tracking-wider hover:shadow-2xl hover:shadow-orange-500/25 hover:scale-[1.03] active:scale-95 transition-all duration-300 inline-flex items-center gap-3"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--cv-accent)] to-royal-400 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-            <i className="fa fa-rocket text-xl relative z-10"></i>
-            <span className="relative z-10">{translations.getStartedFree[lang]}</span>
-            <i className={`fa ${isRtl ? 'fa-arrow-left' : 'fa-arrow-right'} text-lg relative z-10 group-hover:translate-x-2 transition-transform`}></i>
+            {t.ctaBtn[lang]}
+            <i className={`fa ${isRtl ? 'fa-arrow-left' : 'fa-arrow-right'} text-xs`} />
           </button>
-
-          <div className="flex items-center justify-center gap-8 pt-8 text-sm text-white/60">
-            <div className="flex items-center gap-2">
-              <i className="fa fa-check-circle"></i>
-              <span>{lang === 'fr' ? 'Gratuit pour toujours' : lang === 'ar' ? 'مجاني للأبد' : 'Free Forever'}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <i className="fa fa-check-circle"></i>
-              <span>{lang === 'fr' ? 'Aucune carte requise' : lang === 'ar' ? 'لا حاجة لبطاقة' : 'No Card Required'}</span>
-            </div>
+          <div className="flex items-center justify-center gap-6 mt-8 text-xs text-white/30">
+            <span className="flex items-center gap-1.5"><i className="fa fa-check text-amber-500" /> {t.free[lang]}</span>
+            <span className="flex items-center gap-1.5"><i className="fa fa-check text-amber-500" /> {t.noCard[lang]}</span>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-[var(--cv-text-header)] text-white/60 border-t border-white/10">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-white text-xl font-black">E</div>
-            <span className="text-xl font-black text-white">EliteCV</span>
+      <footer className="py-10 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white text-sm font-black">E</div>
+            <span className="font-bold">EliteCV</span>
           </div>
-          <p className="text-sm">
-            {lang === 'fr' ? '© 2024 EliteCV. Tous droits réservés.' : lang === 'ar' ? '© 2024 EliteCV. جميع الحقوق محفوظة.' : '© 2024 EliteCV. All rights reserved.'}
-          </p>
+          <p className="text-xs text-white/30">© 2026 EliteCV. All rights reserved.</p>
         </div>
       </footer>
     </div>
