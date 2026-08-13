@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     region: oregon
-    buildCommand: npm install --include=dev && npm run build
+    buildCommand: npm install --include=dev && npx vite build && ls -la dist/
     startCommand: node server/server.js
     envVars:
       - key: NODE_ENV
